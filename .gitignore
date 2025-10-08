@@ -1,0 +1,10 @@
+# Visual Studio
+.vs/
+
+# Build output
+**/[Bb]in/
+**/[Oo]bj/
+
+# Local configuration
+appsettings.json
+appsettings.Development.json
