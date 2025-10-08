@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TravelokaV2.Application\TravelokaV2.Application.csproj" />
+    <ProjectReference Include="..\TravelokaV2.Infrastructure\TravelokaV2.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
