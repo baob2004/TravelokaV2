@@ -1,3 +1,7 @@
+using TravelokaV2.Application.DTOs.Facility;
+using TravelokaV2.Application.DTOs.Image;
+using TravelokaV2.Application.DTOs.Room;
+
 namespace TravelokaV2.Application.DTOs.RoomCategory
 {
     public class RoomCategoryDto
@@ -16,6 +20,8 @@ namespace TravelokaV2.Application.DTOs.RoomCategory
         public DateTime? ModifyAt { get; set; }
         public Guid? UpdateBy { get; set; }
 
-        public List<Guid> ImageIds { get; set; } = new();
+        public List<ImageDto> Images { get; set; } = new();
+        public List<FacilityDto> Facilities { get; set; } = new();
+        public List<RoomSummaryDto> Rooms { get; set; } = new();
     }
 }
