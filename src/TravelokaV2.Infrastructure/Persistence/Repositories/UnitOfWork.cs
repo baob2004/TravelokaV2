@@ -26,6 +26,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
         private readonly IGenericRepository<Accom_Image> _accomImageRepo;
         private readonly IGenericRepository<Accom_RR> _accomRRRepo;
         private readonly IGenericRepository<Room_Image> _roomImageRepo;
+        private readonly IGenericRepository<Room_Facility> _roomFacilityRepo;
 
         public UnitOfWork(
             AppDbContext context,
@@ -45,7 +46,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             IGenericRepository<Accom_Facility> accomFacilityRepo,
             IGenericRepository<Accom_Image> accomImageRepo,
             IGenericRepository<Accom_RR> accomRRRepo,
-            IGenericRepository<Room_Image> roomImageRepo
+            IGenericRepository<Room_Image> roomImageRepo,
+            IGenericRepository<Room_Facility> roomFacilityRepo
         )
         {
             _context = context;
@@ -68,6 +70,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             _accomImageRepo = accomImageRepo;
             _accomRRRepo = accomRRRepo;
             _roomImageRepo = roomImageRepo;
+            _roomFacilityRepo = roomFacilityRepo;
         }
 
         // Expose 17 repos (getter-only như mẫu của bạn)
@@ -89,6 +92,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
         public IGenericRepository<Accom_Image> AccomImages => _accomImageRepo;
         public IGenericRepository<Accom_RR> AccomRRs => _accomRRRepo;
         public IGenericRepository<Room_Image> RoomImages => _roomImageRepo;
+        public IGenericRepository<Room_Facility> RoomFacilities => _roomFacilityRepo;
 
         public async Task<int> SaveChangesAsync(CancellationToken ct = default)
             => await _context.SaveChangesAsync(ct);

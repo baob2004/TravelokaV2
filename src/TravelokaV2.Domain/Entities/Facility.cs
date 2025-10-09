@@ -9,5 +9,6 @@ namespace TravelokaV2.Domain.Entities
         public DateTime? ModifyAt { get; set; }
         public Guid? UpdateBy { get; set; }
         public ICollection<Accom_Facility> Accom_Facilities { get; set; } = new List<Accom_Facility>();
+        public ICollection<Room_Facility> Room_Facilities { get; set; } = new List<Room_Facility>();
     }
 }

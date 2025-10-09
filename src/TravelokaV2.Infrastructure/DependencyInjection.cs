@@ -22,6 +22,7 @@ namespace TravelokaV2.Infrastructure
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(cfg.GetConnectionString("DefaultConnection"))
             );
+
             // ===== Identity Core =====
             services.AddIdentityCore<AppUser>(opt =>
             {
@@ -35,6 +36,7 @@ namespace TravelokaV2.Infrastructure
             .AddEntityFrameworkStores<AppDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
+
             // ===== JWT Auth =====
             var issuer = cfg["Jwt:Issuer"];
             var audience = cfg["Jwt:Audience"];

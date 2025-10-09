@@ -9,6 +9,11 @@ namespace TravelokaV2.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<RoomCategory> builder)
         {
             builder.ToTable("RoomCategories");
+
+            builder.HasOne<Accommodation>()
+            .WithMany(x => x.RoomCategories)
+            .HasForeignKey(x => x.AccomId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

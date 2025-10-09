@@ -21,6 +21,7 @@ namespace TravelokaV2.Application.Interfaces
         IGenericRepository<Accom_Image> AccomImages { get; }
         IGenericRepository<Accom_RR> AccomRRs { get; }
         IGenericRepository<Room_Image> RoomImages { get; }
+        IGenericRepository<Room_Facility> RoomFacilities { get; }
         Task<int> SaveChangesAsync(CancellationToken ct = default);
     }
 }

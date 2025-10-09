@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TravelokaV2.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using TravelokaV2.Infrastructure.Persistence;
 namespace TravelokaV2.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251009094031_FixEntity1")]
+    partial class FixEntity1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -473,16 +476,14 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PaymentMethodId");
 
                     b.HasIndex("RoomId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("PaymentRecords", (string)null);
                 });
@@ -648,28 +649,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.HasIndex("AccommodationId");
 
                     b.ToTable("RoomCategories", (string)null);
-                });
-
-            modelBuilder.Entity("TravelokaV2.Domain.Entities.Room_Facility", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FacilityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RoomCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FacilityId");
-
-                    b.HasIndex("RoomCategoryId", "FacilityId")
-                        .IsUnique();
-
-                    b.ToTable("Room_Facilities", (string)null);
                 });
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.Room_Image", b =>
@@ -915,11 +894,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("RoomId");
 
-                    b.HasOne("TravelokaV2.Infrastructure.Identity.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.Navigation("PaymentMethod");
 
                     b.Navigation("Room");
@@ -979,25 +953,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.Navigation("Accommodation");
                 });
 
-            modelBuilder.Entity("TravelokaV2.Domain.Entities.Room_Facility", b =>
-                {
-                    b.HasOne("TravelokaV2.Domain.Entities.Facility", "Facility")
-                        .WithMany("Room_Facilities")
-                        .HasForeignKey("FacilityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TravelokaV2.Domain.Entities.RoomCategory", "RoomCategory")
-                        .WithMany("Room_Facilities")
-                        .HasForeignKey("RoomCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Facility");
-
-                    b.Navigation("RoomCategory");
-                });
-
             modelBuilder.Entity("TravelokaV2.Domain.Entities.Room_Image", b =>
                 {
                     b.HasOne("TravelokaV2.Domain.Entities.Image", "Image")
@@ -1040,8 +995,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("TravelokaV2.Domain.Entities.Facility", b =>
                 {
                     b.Navigation("Accom_Facilities");
-
-                    b.Navigation("Room_Facilities");
                 });
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.Image", b =>
@@ -1058,8 +1011,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.RoomCategory", b =>
                 {
-                    b.Navigation("Room_Facilities");
-
                     b.Navigation("Room_Images");
                 });
 #pragma warning restore 612, 618

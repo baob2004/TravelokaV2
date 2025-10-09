@@ -5,7 +5,7 @@ namespace TravelokaV2.Domain.Entities
     public class PaymentRecord
     {
         public Guid Id { get; set; }
-        public Guid? UserId { get; set; }
+        public string? UserId { get; set; }
         public Guid? RoomId { get; set; }
         public Guid? PaymentMethodId { get; set; }
         public Guid? AccomTypeId { get; set; }
