@@ -13,6 +13,7 @@ namespace TravelokaV2.Domain.Entities
         public string? About { get; set; }
         public Guid? AccomId { get; set; }
         public Accommodation? Accommodation { get; set; }
+        public ICollection<Room> Rooms { get; set; } = new List<Room>();
         public ICollection<Room_Image> Room_Images { get; set; } = new List<Room_Image>();
         public ICollection<Room_Facility> Room_Facilities { get; set; } = new List<Room_Facility>();
     }

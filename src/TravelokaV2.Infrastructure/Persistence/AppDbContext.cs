@@ -26,6 +26,7 @@ namespace TravelokaV2.Infrastructure.Persistence
         public DbSet<Room_Image> RoomImages { get; set; } = default!;
         public DbSet<Room> Rooms { get; set; } = default!;
         public DbSet<RoomCategory> RoomCategories { get; set; } = default!;
+        public DbSet<Room_Facility> RoomFacilities { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
