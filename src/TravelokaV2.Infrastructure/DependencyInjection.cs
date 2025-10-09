@@ -6,8 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using TravelBooking.Infrastructure.Persistence.Repositories;
+using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Infrastructure.Identity;
 using TravelokaV2.Infrastructure.Persistence;
+using TravelokaV2.Infrastructure.Persistence.Repositories;
 
 namespace TravelokaV2.Infrastructure
 {
@@ -15,6 +18,7 @@ namespace TravelokaV2.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration cfg)
         {
+            // ==== DbContext ====
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(cfg.GetConnectionString("DefaultConnection"))
             );
@@ -31,7 +35,6 @@ namespace TravelokaV2.Infrastructure
             .AddEntityFrameworkStores<AppDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
-
             // ===== JWT Auth =====
             var issuer = cfg["Jwt:Issuer"];
             var audience = cfg["Jwt:Audience"];
@@ -57,6 +60,10 @@ namespace TravelokaV2.Infrastructure
                     RoleClaimType = ClaimTypes.Role
                 };
             });
+
+            // ==== DI Repository and UnitOfWork ====
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
