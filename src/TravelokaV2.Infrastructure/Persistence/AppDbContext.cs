@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Infrastructure.Identity;
 using TravelokaV2.Domain.Entities;
+using TravelokaV2.Infrastructure.Persistence.Seed;
 
 namespace TravelokaV2.Infrastructure.Persistence
 {
@@ -31,6 +32,7 @@ namespace TravelokaV2.Infrastructure.Persistence
         {
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            builder.Seed();
         }
     }
 }

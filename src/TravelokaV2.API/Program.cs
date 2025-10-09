@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using TravelokaV2.API.Middlewares;
 using TravelokaV2.Application;
 using TravelokaV2.Infrastructure;
 
@@ -32,13 +33,21 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddTransient<ErrorHandlingMiddleware>();
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelokaV2 API v1"));
+// Đặt middleware xử lý lỗi sớm nhất có thể
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

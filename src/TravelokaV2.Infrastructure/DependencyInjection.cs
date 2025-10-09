@@ -8,9 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using TravelBooking.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Application.Interfaces;
+using TravelokaV2.Application.Services;
 using TravelokaV2.Infrastructure.Identity;
 using TravelokaV2.Infrastructure.Persistence;
 using TravelokaV2.Infrastructure.Persistence.Repositories;
+using TravelokaV2.Infrastructure.Persistence.Services;
 
 namespace TravelokaV2.Infrastructure
 {
@@ -67,6 +69,8 @@ namespace TravelokaV2.Infrastructure
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            // ==== Service ====
+            services.AddScoped<IAccommodationService, AccommodationService>();
             return services;
         }
     }
