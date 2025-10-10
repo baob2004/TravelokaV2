@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using TravelokaV2.API.Middlewares;
 using TravelokaV2.Application;
@@ -30,6 +31,22 @@ builder.Services.AddSwaggerGen(c =>
             new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } },
             Array.Empty<string>()
         }
+    });
+    c.MapType<TimeOnly>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "time",
+        Example = new OpenApiString("14:00"),
+        Pattern = @"^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$"
+    });
+
+    c.MapType<TimeOnly?>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "time",
+        Nullable = true,
+        Example = new OpenApiString("14:00"),
+        Pattern = @"^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$"
     });
 });
 

@@ -2,7 +2,7 @@ using TravelokaV2.Domain.Abstractions;
 
 namespace TravelokaV2.Domain.Entities
 {
-    public class GeneralInfo : ISoftDelete
+    public class GeneralInfo
     {
         public Guid AccomId { get; set; }
         public string? PopularFacility { get; set; }
@@ -16,8 +16,5 @@ namespace TravelokaV2.Domain.Entities
         public string? AnotherFacility { get; set; }
         public string? NearbyPOI { get; set; }
         public Accommodation Accommodation { get; set; } = default!;
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedAt { get; set; }
-        public string? DeletedBy { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
 using TravelokaV2.Application.DTOs.GeneralInfo;
+using TravelokaV2.Application.DTOs.Policy;
 using TravelokaV2.Application.Services;
 
 namespace TravelokaV2.API.Controllers
@@ -72,6 +73,29 @@ namespace TravelokaV2.API.Controllers
         public async Task<IActionResult> DeleteGeneralInfo(Guid accomId, CancellationToken ct)
         {
             await _service.DeleteGeneralInfoAsync(accomId, ct);
+            return NoContent();
+        }
+        #endregion
+
+        #region Policy
+        [HttpGet("{accomId:guid}/policy")]
+        public async Task<ActionResult<PolicyDto>> GetPolicy(Guid accomId, CancellationToken ct)
+        {
+            var dto = await _service.GetPolicyAsync(accomId, ct);
+            return dto is null ? NotFound() : Ok(dto);
+        }
+
+        [HttpPut("{accomId:guid}/policy")]
+        public async Task<IActionResult> UpsertPolicy(Guid accomId, [FromBody] PolicyUpdateDto dto, CancellationToken ct)
+        {
+            await _service.UpsertPolicyAsync(accomId, dto, ct);
+            return NoContent();
+        }
+
+        [HttpDelete("{accomId:guid}/policy")]
+        public async Task<IActionResult> DeletePolicy(Guid accomId, CancellationToken ct)
+        {
+            await _service.DeletePolicyAsync(accomId, ct);
             return NoContent();
         }
         #endregion

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
 using TravelokaV2.Application.DTOs.GeneralInfo;
+using TravelokaV2.Application.DTOs.Policy;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Application.Services;
 using TravelokaV2.Domain.Entities;
@@ -157,7 +158,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task UpsertGeneralInfoAsync(Guid accomId, GeneralInfoUpdateDto dto, CancellationToken ct)
         {
-            var gi = await _uow.GeneralInfos.Query().FirstOrDefaultAsync(x => x.AccomId == accomId, ct);
+            var gi = await _uow.GeneralInfos.GetByIdAsync(accomId, ct: ct);
             if (gi == null)
             {
                 gi = _mapper.Map<GeneralInfo>(dto);
@@ -173,9 +174,41 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task DeleteGeneralInfoAsync(Guid accomId, CancellationToken ct)
         {
-            var gi = await _uow.GeneralInfos.Query().FirstOrDefaultAsync(x => x.AccomId == accomId, ct)
+            var gi = await _uow.GeneralInfos.GetByIdAsync(accomId, ct: ct)
                      ?? throw new KeyNotFoundException("GeneralInfo Not Found");
             _uow.GeneralInfos.Remove(gi);
+            await _uow.SaveChangesAsync(ct);
+        }
+        #endregion
+
+        #region Policy
+        public async Task<PolicyDto?> GetPolicyAsync(Guid accomId, CancellationToken ct)
+            => await _uow.Policies.Query().AsNoTracking()
+               .Where(x => x.AccomId == accomId)
+               .Select(x => _mapper.Map<PolicyDto>(x))
+               .FirstOrDefaultAsync(ct);
+
+        public async Task UpsertPolicyAsync(Guid accomId, PolicyUpdateDto dto, CancellationToken ct)
+        {
+            var p = await _uow.Policies.GetByIdAsync(accomId, ct: ct);
+            if (p == null)
+            {
+                p = _mapper.Map<Policy>(dto);
+                p.AccomId = accomId;
+                await _uow.Policies.AddAsync(p, ct);
+            }
+            else
+            {
+                _mapper.Map(dto, p);
+            }
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task DeletePolicyAsync(Guid accomId, CancellationToken ct)
+        {
+            var p = await _uow.Policies.GetByIdAsync(accomId, ct: ct)
+                    ?? throw new KeyNotFoundException("Policy Not Found");
+            _uow.Policies.Remove(p);
             await _uow.SaveChangesAsync(ct);
         }
         #endregion
