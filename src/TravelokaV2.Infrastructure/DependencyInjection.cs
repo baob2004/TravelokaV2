@@ -71,6 +71,7 @@ namespace TravelokaV2.Infrastructure
 
             // ==== Service ====
             services.AddScoped<IAccommodationService, AccommodationService>();
+            services.AddScoped<IAccomTypeService, AccomTypeService>();
             return services;
         }
     }

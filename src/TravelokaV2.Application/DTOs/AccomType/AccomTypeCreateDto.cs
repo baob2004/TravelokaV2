@@ -7,6 +7,6 @@ namespace TravelokaV2.Application.DTOs.AccomType
 {
     public class AccomTypeCreateDto
     {
-        public string? Name { get; set; }
+        public string? Type { get; set; }
     }
 }
