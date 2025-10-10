@@ -27,7 +27,7 @@ namespace TravelokaV2.Application.DTOs.Accommodation
 
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifyAt { get; set; }
-        public Guid? UpdateBy { get; set; }
+        public string? UpdateBy { get; set; }
 
         public GeneralInfoDto? GeneralInfo { get; set; }
         public PolicyDto? Policy { get; set; }

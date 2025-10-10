@@ -7,7 +7,7 @@ namespace TravelokaV2.Domain.Entities
         public string? Icon { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ModifyAt { get; set; }
-        public Guid? UpdateBy { get; set; }
+        public string? UpdateBy { get; set; }
         public ICollection<Accom_Facility> Accom_Facilities { get; set; } = new List<Accom_Facility>();
         public ICollection<Room_Facility> Room_Facilities { get; set; } = new List<Room_Facility>();
     }

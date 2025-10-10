@@ -18,7 +18,7 @@ namespace TravelokaV2.Application.DTOs.RoomCategory
         public Guid? AccomId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifyAt { get; set; }
-        public Guid? UpdateBy { get; set; }
+        public string? UpdateBy { get; set; }
 
         public List<ImageDto> Images { get; set; } = new();
         public List<FacilityDto> Facilities { get; set; } = new();

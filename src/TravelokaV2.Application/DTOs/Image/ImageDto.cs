@@ -7,6 +7,6 @@ namespace TravelokaV2.Application.DTOs.Image
         public string? Alt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifyAt { get; set; }
-        public Guid? UpdateBy { get; set; }
+        public string? UpdateBy { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace TravelokaV2.Domain.Entities
         public ICollection<string> BathAmenities { get; set; } = new List<string>();
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ModifyAt { get; set; }
-        public Guid? UpdateBy { get; set; }
+        public string? UpdateBy { get; set; }
         public string? About { get; set; }
         public Guid? AccomId { get; set; }
         public Accommodation? Accommodation { get; set; }
