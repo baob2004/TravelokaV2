@@ -17,37 +17,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TravelokaV2 API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } },
-            Array.Empty<string>()
-        }
-    });
-    c.MapType<TimeOnly>(() => new OpenApiSchema
-    {
-        Type = "string",
-        Format = "time",
-        Example = new OpenApiString("14:00"),
-        Pattern = @"^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$"
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme { Name = "Authorization", Type = SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT", In = ParameterLocation.Header });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        { new OpenApiSecurityScheme { Reference = new OpenApiReference{ Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() }
     });
 
-    c.MapType<TimeOnly?>(() => new OpenApiSchema
-    {
-        Type = "string",
-        Format = "time",
-        Nullable = true,
-        Example = new OpenApiString("14:00"),
-        Pattern = @"^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$"
-    });
+    c.MapType<TimeOnly>(() => new OpenApiSchema { Type = "string", Format = "time", Example = new OpenApiString("14:00") });
+    c.MapType<TimeOnly?>(() => new OpenApiSchema { Type = "string", Format = "time", Nullable = true, Example = new OpenApiString("14:00") });
 });
 
 builder.Services.AddTransient<ErrorHandlingMiddleware>();
@@ -57,7 +33,6 @@ builder.Services.AddApplication();
 
 var app = builder.Build();
 
-// Đặt middleware xử lý lỗi sớm nhất có thể
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
