@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Infrastructure.Identity;
 using TravelokaV2.Domain.Entities;
 using TravelokaV2.Infrastructure.Persistence.Seed;
+using TravelokaV2.Domain.Abstractions;
+using System.Linq.Expressions;
 
 namespace TravelokaV2.Infrastructure.Persistence
 {
@@ -31,8 +33,21 @@ namespace TravelokaV2.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             builder.Seed();
+
+            foreach (var et in builder.Model.GetEntityTypes())
+            {
+                if (typeof(ISoftDelete).IsAssignableFrom(et.ClrType))
+                {
+                    var param = Expression.Parameter(et.ClrType, "e");
+                    var prop = Expression.Property(param, nameof(ISoftDelete.IsDeleted));
+                    var body = Expression.Equal(prop, Expression.Constant(false));
+                    var lambda = Expression.Lambda(body, param);
+                    builder.Entity(et.ClrType).HasQueryFilter(lambda);
+                }
+            }
         }
     }
 }

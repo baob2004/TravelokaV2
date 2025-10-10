@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TravelokaV2.Application.Interfaces;
+using TravelokaV2.Domain.Abstractions;
 using TravelokaV2.Infrastructure.Persistence;
 
 namespace TravelBooking.Infrastructure.Persistence.Repositories;
@@ -85,6 +86,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public void Remove(T entity)
     {
+        if (entity is ISoftDelete sd)
+        {
+            sd.IsDeleted = true;
+            return;
+        }
         _db.Remove(entity);
     }
 

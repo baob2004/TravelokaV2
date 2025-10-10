@@ -1,6 +1,8 @@
+using TravelokaV2.Domain.Abstractions;
+
 namespace TravelokaV2.Domain.Entities
 {
-    public class Policy
+    public class Policy : ISoftDelete
     {
         public Guid AccomId { get; set; }
         public string? Intruction { get; set; }
@@ -12,5 +14,8 @@ namespace TravelokaV2.Domain.Entities
         public string? Pets { get; set; }
         public string? Addtional { get; set; }
         public Accommodation Accommodation { get; set; } = default!;
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public string? DeletedBy { get; set; }
     }
 }

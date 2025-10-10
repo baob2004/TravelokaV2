@@ -1,6 +1,8 @@
+using TravelokaV2.Domain.Abstractions;
+
 namespace TravelokaV2.Domain.Entities
 {
-    public class RoomCategory
+    public class RoomCategory : ISoftDelete
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
@@ -16,5 +18,8 @@ namespace TravelokaV2.Domain.Entities
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
         public ICollection<Room_Image> Room_Images { get; set; } = new List<Room_Image>();
         public ICollection<Room_Facility> Room_Facilities { get; set; } = new List<Room_Facility>();
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public string? DeletedBy { get; set; }
     }
 }

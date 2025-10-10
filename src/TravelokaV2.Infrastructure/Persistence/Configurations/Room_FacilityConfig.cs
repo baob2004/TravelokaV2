@@ -25,6 +25,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Configurations
             .WithMany(x => x.Room_Facilities)
             .HasForeignKey(x => x.FacilityId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasQueryFilter(x => x.RoomCategory != null && !x.RoomCategory.IsDeleted);
         }
     }
 }
