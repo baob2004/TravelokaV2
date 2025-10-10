@@ -5,6 +5,7 @@ using TravelokaV2.Domain.Entities;
 using TravelokaV2.Infrastructure.Persistence.Seed;
 using TravelokaV2.Domain.Abstractions;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace TravelokaV2.Infrastructure.Persistence
 {
@@ -30,6 +31,7 @@ namespace TravelokaV2.Infrastructure.Persistence
         public DbSet<Room> Rooms { get; set; } = default!;
         public DbSet<RoomCategory> RoomCategories { get; set; } = default!;
         public DbSet<Room_Facility> RoomFacilities { get; set; } = default!;
+        public DbSet<RefreshToken> RefreshTokens { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -37,6 +39,13 @@ namespace TravelokaV2.Infrastructure.Persistence
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             builder.Seed();
 
+            // ==== Role ====
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" }
+            );
+
+            // ==== Filter Delete ====
             foreach (var et in builder.Model.GetEntityTypes())
             {
                 if (typeof(ISoftDelete).IsAssignableFrom(et.ClrType))

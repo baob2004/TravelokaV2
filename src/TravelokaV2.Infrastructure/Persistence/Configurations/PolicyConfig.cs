@@ -20,6 +20,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Configurations
              .WithOne(a => a.Policy)
              .HasForeignKey<Policy>(x => x.AccomId)
              .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasQueryFilter(x => x.Accommodation != null && !x.Accommodation.IsDeleted);
         }
     }
 }

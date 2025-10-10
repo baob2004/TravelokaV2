@@ -47,6 +47,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -682,6 +696,31 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.ToTable("Policies", (string)null);
                 });
 
+            modelBuilder.Entity("TravelokaV2.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("TravelokaV2.Domain.Entities.ReviewsAndRating", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1127,7 +1166,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("TravelokaV2.Domain.Entities.AccomType", "AccomType")
                         .WithMany("Accommodations")
-                        .HasForeignKey("AccomTypeId");
+                        .HasForeignKey("AccomTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AccomType");
                 });

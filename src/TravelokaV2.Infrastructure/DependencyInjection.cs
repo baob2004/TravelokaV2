@@ -9,10 +9,14 @@ using Microsoft.IdentityModel.Tokens;
 using TravelBooking.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Application.Services;
+using TravelokaV2.Application.Services.Identity;
+using TravelokaV2.Application.Services.Security;
 using TravelokaV2.Infrastructure.Identity;
 using TravelokaV2.Infrastructure.Persistence;
 using TravelokaV2.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Infrastructure.Persistence.Services;
+using TravelokaV2.Infrastructure.Persistence.Services.Identity;
+using TravelokaV2.Infrastructure.Persistence.Services.Security;
 
 namespace TravelokaV2.Infrastructure
 {
@@ -24,6 +28,9 @@ namespace TravelokaV2.Infrastructure
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(cfg.GetConnectionString("DefaultConnection"))
             );
+
+            // ==== JWT Options ====
+            services.Configure<JwtOptions>(cfg.GetSection("Jwt"));
 
             // ===== Identity Core =====
             services.AddIdentityCore<AppUser>(opt =>
@@ -70,6 +77,9 @@ namespace TravelokaV2.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // ==== Service ====
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
+
             services.AddScoped<IAccommodationService, AccommodationService>();
             services.AddScoped<IAccomTypeService, AccomTypeService>();
             return services;

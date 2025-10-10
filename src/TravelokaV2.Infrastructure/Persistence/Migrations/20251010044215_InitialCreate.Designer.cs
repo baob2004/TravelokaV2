@@ -12,8 +12,8 @@ using TravelokaV2.Infrastructure.Persistence;
 namespace TravelokaV2.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251010012129_SoftDeleteFilter")]
-    partial class SoftDeleteFilter
+    [Migration("20251010044215_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -524,10 +538,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("TravelokaV2.Domain.Entities.GeneralInfo", b =>
                 {
                     b.Property<Guid>("AccomId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AccommodationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("AccommodationId");
 
                     b.Property<string>("AnotherFacility")
                         .HasColumnType("nvarchar(max)");
@@ -544,17 +556,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.Property<TimeOnly?>("CheckOut")
                         .HasColumnType("time");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("DistanceToDowntown")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NearbyPOI")
                         .HasColumnType("nvarchar(max)");
@@ -569,8 +572,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AccomId");
-
-                    b.HasIndex("AccommodationId");
 
                     b.ToTable("GeneralInfos", (string)null);
                 });
@@ -666,7 +667,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("TravelokaV2.Domain.Entities.Policy", b =>
                 {
                     b.Property<Guid>("AccomId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("AccommodationId");
 
                     b.Property<string>("Addtional")
                         .HasColumnType("nvarchar(max)");
@@ -680,17 +682,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.Property<TimeOnly?>("CheckOut")
                         .HasColumnType("time");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Intruction")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Pets")
                         .HasColumnType("nvarchar(max)");
@@ -704,6 +697,31 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.HasKey("AccomId");
 
                     b.ToTable("Policies", (string)null);
+                });
+
+            modelBuilder.Entity("TravelokaV2.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.ReviewsAndRating", b =>
@@ -1151,22 +1169,17 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("TravelokaV2.Domain.Entities.AccomType", "AccomType")
                         .WithMany("Accommodations")
-                        .HasForeignKey("AccomTypeId");
+                        .HasForeignKey("AccomTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AccomType");
                 });
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.GeneralInfo", b =>
                 {
-                    b.HasOne("TravelokaV2.Domain.Entities.Accommodation", null)
+                    b.HasOne("TravelokaV2.Domain.Entities.Accommodation", "Accommodation")
                         .WithOne("GeneralInfo")
                         .HasForeignKey("TravelokaV2.Domain.Entities.GeneralInfo", "AccomId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("TravelokaV2.Domain.Entities.Accommodation", "Accommodation")
-                        .WithMany()
-                        .HasForeignKey("AccommodationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1198,7 +1211,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.HasOne("TravelokaV2.Domain.Entities.Accommodation", "Accommodation")
                         .WithOne("Policy")
                         .HasForeignKey("TravelokaV2.Domain.Entities.Policy", "AccomId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Accommodation");
