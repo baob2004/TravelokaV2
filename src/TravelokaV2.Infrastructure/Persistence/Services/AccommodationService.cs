@@ -18,48 +18,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             _uow = uow;
             _mapper = mapper;
         }
-        public async Task<Guid> CreateAsync(AccomCreateDto dto, CancellationToken ct)
-        {
-            if (dto == null) throw new ArgumentNullException(nameof(dto));
-
-            if (string.IsNullOrWhiteSpace(dto.Name)) throw new ArgumentException("Name is required.", nameof(dto.Name));
-
-            if (dto.AccomTypeId.HasValue)
-            {
-                var typeExists = await _uow.AccomTypes.Query()
-                    .AnyAsync(t => t.Id == dto.AccomTypeId.Value, ct);
-                if (!typeExists) throw new KeyNotFoundException("AccomType not found.");
-            }
-
-            var entity = _mapper.Map<Accommodation>(dto);
-            entity.CreatedAt = DateTime.UtcNow;
-
-            await _uow.Accommodations.AddAsync(entity, ct);
-            await _uow.SaveChangesAsync(ct);
-
-            return entity.Id;
-        }
-
-        public async Task<AccomDetailDto?> GetByIdAsync(Guid id, CancellationToken ct)
-        {
-            var accom = await _uow.Accommodations.GetByIdAsync(
-                id,
-                true,
-                ct,
-                a => a.AccomType!,
-                a => a.GeneralInfo!,
-                a => a.Policy!,
-                a => a.Accom_Facilities,
-                a => a.Accom_Images,
-                a => a.RoomCategories,
-                a => a.Accom_RRs
-            );
-            if (accom == null) throw new KeyNotFoundException("Accommodation Not Found");
-
-            var dto = _mapper.Map<AccomDetailDto>(accom);
-
-            return dto;
-        }
 
         public async Task<PagedResult<AccomSummaryDto>> GetPagedAsync(
             PagedQuery pagedQuery,
@@ -114,6 +72,49 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             };
         }
 
+        public async Task<AccomDetailDto?> GetByIdAsync(Guid id, CancellationToken ct)
+        {
+            var accom = await _uow.Accommodations.GetByIdAsync(
+                id,
+                true,
+                ct,
+                a => a.AccomType!,
+                a => a.GeneralInfo!,
+                a => a.Policy!,
+                a => a.Accom_Facilities,
+                a => a.Accom_Images,
+                a => a.RoomCategories,
+                a => a.Accom_RRs
+            );
+            if (accom == null) throw new KeyNotFoundException("Accommodation Not Found");
+
+            var dto = _mapper.Map<AccomDetailDto>(accom);
+
+            return dto;
+        }
+
+        public async Task<Guid> CreateAsync(AccomCreateDto dto, CancellationToken ct)
+        {
+            if (dto == null) throw new ArgumentNullException(nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.Name)) throw new ArgumentException("Name is required.", nameof(dto.Name));
+
+            if (dto.AccomTypeId.HasValue)
+            {
+                var typeExists = await _uow.AccomTypes.Query()
+                    .AnyAsync(t => t.Id == dto.AccomTypeId.Value, ct);
+                if (!typeExists) throw new KeyNotFoundException("AccomType not found.");
+            }
+
+            var entity = _mapper.Map<Accommodation>(dto);
+            entity.CreatedAt = DateTime.UtcNow;
+
+            await _uow.Accommodations.AddAsync(entity, ct);
+            await _uow.SaveChangesAsync(ct);
+
+            return entity.Id;
+        }
+
 
         public async Task UpdateAsync(Guid id, AccomUpdateDto dto, CancellationToken ct)
         {
@@ -129,6 +130,17 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
             _mapper.Map(dto, entity);
             entity.ModifyAt = DateTime.UtcNow;
+
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task DeleteAsync(Guid id, CancellationToken ct)
+        {
+            var entity = await _uow.Accommodations.GetByIdAsync(id, asNoTracking: false, ct: ct)
+                         ?? throw new KeyNotFoundException("Accommodation Not Found");
+
+            _uow.Accommodations.Remove(entity);
+            entity.DeletedAt = DateTime.UtcNow;
 
             await _uow.SaveChangesAsync(ct);
         }

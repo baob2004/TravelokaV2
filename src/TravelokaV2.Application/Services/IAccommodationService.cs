@@ -12,5 +12,7 @@ namespace TravelokaV2.Application.Services
         Task<Guid> CreateAsync(AccomCreateDto dto, CancellationToken ct);
 
         Task UpdateAsync(Guid id, AccomUpdateDto dto, CancellationToken ct);
+
+        Task DeleteAsync(Guid id, CancellationToken ct);
     }
 }

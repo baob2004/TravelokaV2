@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
@@ -41,6 +40,13 @@ namespace TravelokaV2.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] AccomUpdateDto dto, CancellationToken ct)
         {
             await _service.UpdateAsync(id, dto, ct);
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+        {
+            await _service.DeleteAsync(id, ct);
             return NoContent();
         }
     }
