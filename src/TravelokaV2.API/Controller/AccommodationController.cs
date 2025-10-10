@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
+using TravelokaV2.Application.DTOs.GeneralInfo;
 using TravelokaV2.Application.Services;
 
 namespace TravelokaV2.API.Controllers
@@ -12,6 +13,7 @@ namespace TravelokaV2.API.Controllers
         private readonly IAccommodationService _service;
         public AccommodationController(IAccommodationService service) => _service = service;
 
+        #region Accommodation
         [HttpGet]
         public async Task<ActionResult<PagedResult<AccomSummaryDto>>> GetPaged(
                     [FromQuery] PagedQuery pagedQuery,
@@ -49,5 +51,29 @@ namespace TravelokaV2.API.Controllers
             await _service.DeleteAsync(id, ct);
             return NoContent();
         }
+        #endregion
+
+        #region GeneralInfo
+        [HttpGet("{accomId:guid}/general-info")]
+        public async Task<ActionResult<GeneralInfoDto>> GetGeneralInfo(Guid accomId, CancellationToken ct)
+        {
+            var dto = await _service.GetGeneralInfoAsync(accomId, ct);
+            return dto is null ? NotFound() : Ok(dto);
+        }
+
+        [HttpPut("{accomId:guid}/general-info")]
+        public async Task<IActionResult> UpsertGeneralInfo(Guid accomId, [FromBody] GeneralInfoUpdateDto dto, CancellationToken ct)
+        {
+            await _service.UpsertGeneralInfoAsync(accomId, dto, ct);
+            return NoContent();
+        }
+
+        [HttpDelete("{accomId:guid}/general-info")]
+        public async Task<IActionResult> DeleteGeneralInfo(Guid accomId, CancellationToken ct)
+        {
+            await _service.DeleteGeneralInfoAsync(accomId, ct);
+            return NoContent();
+        }
+        #endregion
     }
 }

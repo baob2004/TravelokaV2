@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
+using TravelokaV2.Application.DTOs.GeneralInfo;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Application.Services;
 using TravelokaV2.Domain.Entities;
@@ -19,6 +20,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             _mapper = mapper;
         }
 
+        #region Accommodation
         public async Task<PagedResult<AccomSummaryDto>> GetPagedAsync(
             PagedQuery pagedQuery,
             AccomSearchRequest request,
@@ -144,5 +146,38 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
             await _uow.SaveChangesAsync(ct);
         }
+        #endregion
+
+        #region General Info
+        public async Task<GeneralInfoDto?> GetGeneralInfoAsync(Guid accomId, CancellationToken ct)
+            => await _uow.GeneralInfos.Query().AsNoTracking()
+               .Where(x => x.AccomId == accomId)
+               .Select(x => _mapper.Map<GeneralInfoDto>(x))
+               .FirstOrDefaultAsync(ct);
+
+        public async Task UpsertGeneralInfoAsync(Guid accomId, GeneralInfoUpdateDto dto, CancellationToken ct)
+        {
+            var gi = await _uow.GeneralInfos.Query().FirstOrDefaultAsync(x => x.AccomId == accomId, ct);
+            if (gi == null)
+            {
+                gi = _mapper.Map<GeneralInfo>(dto);
+                gi.AccomId = accomId;
+                await _uow.GeneralInfos.AddAsync(gi, ct);
+            }
+            else
+            {
+                _mapper.Map(dto, gi);
+            }
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task DeleteGeneralInfoAsync(Guid accomId, CancellationToken ct)
+        {
+            var gi = await _uow.GeneralInfos.Query().FirstOrDefaultAsync(x => x.AccomId == accomId, ct)
+                     ?? throw new KeyNotFoundException("GeneralInfo Not Found");
+            _uow.GeneralInfos.Remove(gi);
+            await _uow.SaveChangesAsync(ct);
+        }
+        #endregion
     }
 }

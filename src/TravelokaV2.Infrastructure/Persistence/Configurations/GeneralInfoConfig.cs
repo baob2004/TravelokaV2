@@ -12,10 +12,14 @@ namespace TravelokaV2.Infrastructure.Persistence.Configurations
 
             builder.HasKey(x => x.AccomId);
 
-            builder.HasOne<Accommodation>()
-            .WithOne(a => a.GeneralInfo)
-            .HasForeignKey<GeneralInfo>(x => x.AccomId)
-            .OnDelete(DeleteBehavior.NoAction);
+            builder.Property(x => x.AccomId)
+             .ValueGeneratedNever()
+             .HasColumnName("AccommodationId");
+
+            builder.HasOne(x => x.Accommodation)
+             .WithOne(a => a.GeneralInfo)
+             .HasForeignKey<GeneralInfo>(x => x.AccomId)
+             .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
