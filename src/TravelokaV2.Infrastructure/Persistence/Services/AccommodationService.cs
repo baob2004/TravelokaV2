@@ -214,7 +214,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
         }
         #endregion
 
-        #region Assign Images
+        #region Assign Image
         public async Task LinkImageAsync(Guid accomId, Guid imageId, CancellationToken ct)
         {
             var accomExists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
@@ -245,6 +245,41 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             if (link == null) throw new KeyNotFoundException("Image link Not Found");
 
             _uow.AccomImages.Remove(link);
+            await _uow.SaveChangesAsync(ct);
+        }
+        #endregion
+
+        #region Assign Facility
+        public async Task LinkFacilityAsync(Guid accomId, Guid facilityId, CancellationToken ct)
+        {
+            var accomExists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
+            if (!accomExists) throw new KeyNotFoundException("Accommodation Not Found");
+
+            var facExists = await _uow.Facilities.Query().AnyAsync(f => f.Id == facilityId, ct);
+            if (!facExists) throw new KeyNotFoundException("Facility Not Found");
+
+            var exists = await _uow.AccomFacilities.Query()
+                .AnyAsync(x => x.AccomId == accomId && x.FacilityId == facilityId, ct);
+            if (exists) return;
+
+            await _uow.AccomFacilities.AddAsync(new Accom_Facility
+            {
+                Id = Guid.NewGuid(),
+                AccomId = accomId,
+                FacilityId = facilityId
+            }, ct);
+
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task UnlinkFacilityAsync(Guid accomId, Guid facilityId, CancellationToken ct)
+        {
+            var link = await _uow.AccomFacilities.Query()
+                .FirstOrDefaultAsync(x => x.AccomId == accomId && x.FacilityId == facilityId, ct);
+
+            if (link == null) throw new KeyNotFoundException("Facility link Not Found");
+
+            _uow.AccomFacilities.Remove(link);
             await _uow.SaveChangesAsync(ct);
         }
         #endregion

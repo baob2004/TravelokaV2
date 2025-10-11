@@ -101,7 +101,7 @@ namespace TravelokaV2.API.Controllers
         }
         #endregion
 
-        #region Assign Images
+        #region Assign Image
         [HttpPost("{accomId:guid}/images/{imageId:guid}")]
         public async Task<IActionResult> LinkImage(Guid accomId, Guid imageId, CancellationToken ct)
         {
@@ -116,5 +116,22 @@ namespace TravelokaV2.API.Controllers
             return NoContent();
         }
         #endregion
+
+        #region Assign Facility
+        [HttpPost("{accomId:guid}/facilities/{facilityId:guid}")]
+        public async Task<IActionResult> LinkFacility(Guid accomId, Guid facilityId, CancellationToken ct)
+        {
+            await _service.LinkFacilityAsync(accomId, facilityId, ct);
+            return NoContent();
+        }
+
+        [HttpDelete("{accomId:guid}/facilities/{facilityId:guid}")]
+        public async Task<IActionResult> UnlinkFacility(Guid accomId, Guid facilityId, CancellationToken ct)
+        {
+            await _service.UnlinkFacilityAsync(accomId, facilityId, ct);
+            return NoContent();
+        }
+        #endregion
+
     }
 }

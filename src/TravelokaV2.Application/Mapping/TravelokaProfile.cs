@@ -69,7 +69,16 @@ namespace TravelokaV2.Application.Mapping
             CreateMap<ImageUpdateDto, Image>();
 
             // ========== RoomCategory ==========
-            CreateMap<RoomCategory, RoomCategoryDto>();
+            CreateMap<RoomCategory, RoomCategoryDto>()
+                .ForMember(d => d.Images, o => o.MapFrom(s =>
+                    s.Room_Images
+                     .Where(ri => ri.Image != null)
+                     .Select(ri => ri.Image!)))
+                .ForMember(d => d.Facilities, o => o.MapFrom(s =>
+                    s.Room_Facilities
+                     .Where(rf => rf.Facility != null)
+                     .Select(rf => rf.Facility!)))
+                .ForMember(d => d.Rooms, o => o.MapFrom(s => s.Rooms));
             CreateMap<RoomCategoryCreateDto, RoomCategory>();
             CreateMap<RoomCategoryUpdateDto, RoomCategory>();
 
