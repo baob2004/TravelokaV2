@@ -40,10 +40,12 @@ namespace TravelokaV2.Application.Mapping
             .ForMember(d => d.RoomCategories,
                 o => o.MapFrom(s => s.RoomCategories))
 
-            .ForMember(d => d.Reviews,
-                o => o.MapFrom(s => s.Accom_RRs
-                    .Where(ar => ar.ReviewsAndRating != null)
-                    .Select(ar => ar.ReviewsAndRating!)));
+            .ForMember(d => d.Reviews, o => o.MapFrom(s =>
+                s.Accom_RRs
+                .Where(ar => ar.ReviewsAndRating != null)
+                .Select(ar => ar.ReviewsAndRating!))
+
+            );
 
             CreateMap<AccomCreateDto, Accommodation>();
             CreateMap<AccomUpdateDto, Accommodation>();
