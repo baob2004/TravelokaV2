@@ -119,8 +119,13 @@ namespace TravelokaV2.Application.Mapping
             CreateMap<PaymentMethodUpdateDto, PaymentMethod>();
 
             // ========== PaymentRecord ==========
-            CreateMap<PaymentRecord, PaymentRecordDto>();
+            CreateMap<PaymentRecord, PaymentRecordDto>()
+                .ForMember(d => d.PaymentMethodName, o => o.MapFrom(s => s.PaymentMethod != null ? s.PaymentMethod.Name : null))
+                .ForMember(d => d.RoomName, o => o.MapFrom(s => s.Room != null ? s.Room.Name : null));
+
             CreateMap<PaymentRecordCreateDto, PaymentRecord>();
+            CreateMap<PaymentRecordUpdateDto, PaymentRecord>();
+
 
             // ========== AccomType (thêm DTO đơn giản) ==========
             CreateMap<AccomType, AccomTypeDto>();

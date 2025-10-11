@@ -1,4 +1,3 @@
-// API/Controllers/ReviewsController.cs
 using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.ReviewsAndRating;
 using TravelokaV2.Application.Services;
