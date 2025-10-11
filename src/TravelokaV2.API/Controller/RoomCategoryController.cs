@@ -39,5 +39,35 @@ namespace TravelokaV2.API.Controllers
             await _service.DeleteAsync(id, ct);
             return NoContent();
         }
+
+        // ===== Facilities =====
+        [HttpPost("{roomCategoryId:guid}/facilities/{facilityId:guid}")]
+        public async Task<IActionResult> LinkFacility(Guid roomCategoryId, Guid facilityId, CancellationToken ct)
+        {
+            await _service.LinkFacilityAsync(roomCategoryId, facilityId, ct);
+            return NoContent();
+        }
+
+        [HttpDelete("{roomCategoryId:guid}/facilities/{facilityId:guid}")]
+        public async Task<IActionResult> UnlinkFacility(Guid roomCategoryId, Guid facilityId, CancellationToken ct)
+        {
+            await _service.UnlinkFacilityAsync(roomCategoryId, facilityId, ct);
+            return NoContent();
+        }
+
+        // ===== Images =====
+        [HttpPost("{roomCategoryId:guid}/images/{imageId:guid}")]
+        public async Task<IActionResult> LinkImage(Guid roomCategoryId, Guid imageId, CancellationToken ct)
+        {
+            await _service.LinkImageAsync(roomCategoryId, imageId, ct);
+            return NoContent();
+        }
+
+        [HttpDelete("{roomCategoryId:guid}/images/{imageId:guid}")]
+        public async Task<IActionResult> UnlinkImage(Guid roomCategoryId, Guid imageId, CancellationToken ct)
+        {
+            await _service.UnlinkImageAsync(roomCategoryId, imageId, ct);
+            return NoContent();
+        }
     }
 }

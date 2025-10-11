@@ -95,5 +95,71 @@ namespace TravelokaV2.Application.Services
             _uow.RoomCategories.Remove(entity);
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task LinkFacilityAsync(Guid roomCategoryId, Guid facilityId, CancellationToken ct)
+        {
+            var rcExists = await _uow.RoomCategories.Query().AnyAsync(x => x.Id == roomCategoryId, ct);
+            if (!rcExists) throw new KeyNotFoundException("RoomCategory not found.");
+
+            var facExists = await _uow.Facilities.Query().AnyAsync(f => f.Id == facilityId, ct);
+            if (!facExists) throw new KeyNotFoundException("Facility not found.");
+
+            var exists = await _uow.RoomFacilities.Query()
+                .AnyAsync(x => x.RoomCategoryId == roomCategoryId && x.FacilityId == facilityId, ct);
+            if (exists) return;
+
+            await _uow.RoomFacilities.AddAsync(new Room_Facility
+            {
+                Id = Guid.NewGuid(),
+                RoomCategoryId = roomCategoryId,
+                FacilityId = facilityId
+            }, ct);
+
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task UnlinkFacilityAsync(Guid roomCategoryId, Guid facilityId, CancellationToken ct)
+        {
+            var link = await _uow.RoomFacilities.Query()
+                .FirstOrDefaultAsync(x => x.RoomCategoryId == roomCategoryId && x.FacilityId == facilityId, ct);
+
+            if (link == null) throw new KeyNotFoundException("Facility link not found.");
+
+            _uow.RoomFacilities.Remove(link);
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task LinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct)
+        {
+            var rcExists = await _uow.RoomCategories.Query().AnyAsync(x => x.Id == roomCategoryId, ct);
+            if (!rcExists) throw new KeyNotFoundException("RoomCategory not found.");
+
+            var imgExists = await _uow.Images.Query().AnyAsync(i => i.Id == imageId, ct);
+            if (!imgExists) throw new KeyNotFoundException("Image not found.");
+
+            var exists = await _uow.RoomImages.Query()
+                .AnyAsync(x => x.RoomCategoryId == roomCategoryId && x.ImageId == imageId, ct);
+            if (exists) return;
+
+            await _uow.RoomImages.AddAsync(new Room_Image
+            {
+                Id = Guid.NewGuid(),
+                RoomCategoryId = roomCategoryId,
+                ImageId = imageId
+            }, ct);
+
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task UnlinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct)
+        {
+            var link = await _uow.RoomImages.Query()
+                .FirstOrDefaultAsync(x => x.RoomCategoryId == roomCategoryId && x.ImageId == imageId, ct);
+
+            if (link == null) throw new KeyNotFoundException("Image link not found.");
+
+            _uow.RoomImages.Remove(link);
+            await _uow.SaveChangesAsync(ct);
+        }
     }
 }

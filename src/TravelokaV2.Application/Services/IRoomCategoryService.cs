@@ -10,5 +10,10 @@ namespace TravelokaV2.Application.Services
         Task UpdateAsync(Guid id, RoomCategoryUpdateDto dto, CancellationToken ct);
         Task DeleteAsync(Guid id, CancellationToken ct);
 
+        Task LinkFacilityAsync(Guid roomCategoryId, Guid facilityId, CancellationToken ct);
+        Task UnlinkFacilityAsync(Guid roomCategoryId, Guid facilityId, CancellationToken ct);
+
+        Task LinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct);
+        Task UnlinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct);
     }
 }

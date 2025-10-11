@@ -87,8 +87,17 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                 q => q.Include(a => a.Accom_Images).ThenInclude(ai => ai.Image)!,
                 q => q.Include(a => a.Accom_Facilities).ThenInclude(af => af.Facility)!,
                 q => q.Include(a => a.RoomCategories),
+                q => q.Include(a => a.RoomCategories)
+                      .ThenInclude(rc => rc.Room_Images)
+                      .ThenInclude(ri => ri.Image)!,
+                q => q.Include(a => a.RoomCategories)
+                      .ThenInclude(rc => rc.Room_Facilities)
+                      .ThenInclude(rf => rf.Facility)!,
+                q => q.Include(a => a.RoomCategories)
+                      .ThenInclude(rc => rc.Rooms),
                 q => q.Include(a => a.Accom_RRs).ThenInclude(ar => ar.ReviewsAndRating)!
             );
+
 
             if (accom == null) throw new KeyNotFoundException("Accommodation Not Found");
 
