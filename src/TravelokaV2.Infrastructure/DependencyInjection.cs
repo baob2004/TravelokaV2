@@ -90,6 +90,7 @@ namespace TravelokaV2.Infrastructure
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IBedTypeService, BedTypeService>();
             services.AddScoped<ICancelPolicyService, CancelPolicyService>();
+            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 
             return services;
         }

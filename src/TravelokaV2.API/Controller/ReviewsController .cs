@@ -7,10 +7,10 @@ namespace TravelokaV2.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReviewsController : ControllerBase
+    public class ReviewsAndRatingController : ControllerBase
     {
         private readonly IReviewsService _service;
-        public ReviewsController(IReviewsService service) => _service = service;
+        public ReviewsAndRatingController(IReviewsService service) => _service = service;
 
         [HttpGet("Accommodations/{accomId:guid}")]
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetByAccommodation(Guid accomId, CancellationToken ct)

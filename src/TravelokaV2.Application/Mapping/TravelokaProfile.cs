@@ -27,6 +27,7 @@ namespace TravelokaV2.Application.Mapping
             CreateMap<Accommodation, AccomDetailDto>()
             .ForMember(d => d.AccomTypeName,
                     o => o.MapFrom(s => s.AccomType != null ? s.AccomType.Type : null))
+
             .ForMember(d => d.Facilities,
                 o => o.MapFrom(s => s.Accom_Facilities
                     .Where(af => af.Facility != null)
@@ -44,7 +45,6 @@ namespace TravelokaV2.Application.Mapping
                 s.Accom_RRs
                 .Where(ar => ar.ReviewsAndRating != null)
                 .Select(ar => ar.ReviewsAndRating!))
-
             );
 
             CreateMap<AccomCreateDto, Accommodation>();

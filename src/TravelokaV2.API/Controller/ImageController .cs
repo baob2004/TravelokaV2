@@ -6,10 +6,10 @@ namespace TravelokaV2.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ImagesController : ControllerBase
+    public class ImageController : ControllerBase
     {
         private readonly IImageService _service;
-        public ImagesController(IImageService service) => _service = service;
+        public ImageController(IImageService service) => _service = service;
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ImageDto>>> GetAll(CancellationToken ct)
