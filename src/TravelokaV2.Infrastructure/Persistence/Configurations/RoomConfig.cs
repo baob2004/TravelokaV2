@@ -10,7 +10,7 @@ public class RoomConfig : IEntityTypeConfiguration<Room>
 
         builder.HasOne(r => r.RoomCategory)
                .WithMany(rc => rc.Rooms)
-               .HasForeignKey(r => r.CategoryId)     // <— map đúng FK
+               .HasForeignKey(r => r.CategoryId)
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(r => r.BedType)
