@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace TravelokaV2.Application.Interfaces
 {
@@ -7,10 +8,10 @@ namespace TravelokaV2.Application.Interfaces
         IQueryable<T> Query(bool asNoTracking = true);
 
         Task<T?> GetByIdAsync(
-            object id,
-            bool asNoTracking = true,
-            CancellationToken ct = default,
-            params Expression<Func<T, object>>[] includes
+                object id,
+                bool asNoTracking = true,
+                CancellationToken ct = default,
+                params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes
         );
 
         Task<List<T>> GetAllAsync(

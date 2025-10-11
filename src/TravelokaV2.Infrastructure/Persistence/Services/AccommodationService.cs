@@ -79,16 +79,17 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
         {
             var accom = await _uow.Accommodations.GetByIdAsync(
                 id,
-                true,
-                ct,
-                a => a.AccomType!,
-                a => a.GeneralInfo!,
-                a => a.Policy!,
-                a => a.Accom_Facilities,
-                a => a.Accom_Images,
-                a => a.RoomCategories,
-                a => a.Accom_RRs
+                asNoTracking: true,
+                ct: ct,
+                q => q.Include(a => a.AccomType)!,
+                q => q.Include(a => a.GeneralInfo)!,
+                q => q.Include(a => a.Policy)!,
+                q => q.Include(a => a.Accom_Images).ThenInclude(ai => ai.Image)!,
+                q => q.Include(a => a.Accom_Facilities).ThenInclude(af => af.Facility)!,
+                q => q.Include(a => a.RoomCategories),
+                q => q.Include(a => a.Accom_RRs)
             );
+
             if (accom == null) throw new KeyNotFoundException("Accommodation Not Found");
 
             var dto = _mapper.Map<AccomDetailDto>(accom);

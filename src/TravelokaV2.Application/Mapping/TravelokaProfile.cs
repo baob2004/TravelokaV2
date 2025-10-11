@@ -24,7 +24,27 @@ namespace TravelokaV2.Application.Mapping
         {
             // ========== Accommodation ==========
             CreateMap<Accommodation, AccomSummaryDto>();
-            CreateMap<Accommodation, AccomDetailDto>();
+            CreateMap<Accommodation, AccomDetailDto>()
+            .ForMember(d => d.AccomTypeName,
+                    o => o.MapFrom(s => s.AccomType != null ? s.AccomType.Type : null))
+            .ForMember(d => d.Facilities,
+                o => o.MapFrom(s => s.Accom_Facilities
+                    .Where(af => af.Facility != null)
+                    .Select(af => af.Facility!)))
+
+            .ForMember(d => d.Images,
+                o => o.MapFrom(s => s.Accom_Images
+                    .Where(ai => ai.Image != null)
+                    .Select(ai => ai.Image!)))
+
+            .ForMember(d => d.RoomCategories,
+                o => o.MapFrom(s => s.RoomCategories))
+
+            .ForMember(d => d.Reviews,
+                o => o.MapFrom(s => s.Accom_RRs
+                    .Where(ar => ar.ReviewsAndRating != null)
+                    .Select(ar => ar.ReviewsAndRating!)));
+
             CreateMap<AccomCreateDto, Accommodation>();
             CreateMap<AccomUpdateDto, Accommodation>();
 

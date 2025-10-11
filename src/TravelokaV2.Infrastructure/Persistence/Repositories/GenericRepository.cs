@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Domain.Abstractions;
@@ -53,32 +54,40 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await q.ToListAsync(ct);
     }
 
-    public async Task<T?> GetByIdAsync(object id, bool asNoTracking = true, CancellationToken ct = default, params Expression<Func<T, object>>[] includes)
+    public async Task<T?> GetByIdAsync(
+        object id,
+        bool asNoTracking = true,
+        CancellationToken ct = default,
+        params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes
+    )
     {
         IQueryable<T> query = _db;
 
         if (asNoTracking)
             query = query.AsNoTracking();
 
+        // nhiều include/theninclude
         if (includes is { Length: > 0 })
         {
             foreach (var inc in includes)
-                query = query.Include(inc);
+                query = inc(query);
         }
 
-        // Use EF Core's FindAsync only when no includes needed
+        // nếu không include gì thì dùng FindAsync cho nhanh
         if (includes == null || includes.Length == 0)
             return await _db.FindAsync(new[] { id }, ct);
 
-        // Otherwise query by key
-        var keyName = _context.Model.FindEntityType(typeof(T))?
-            .FindPrimaryKey()?.Properties.First().Name;
+        // Otherwise filter theo khóa
+        var keyName = _context.Model
+            .FindEntityType(typeof(T))?
+            .FindPrimaryKey()?
+            .Properties.First().Name
+            ?? throw new InvalidOperationException($"No key defined for {typeof(T).Name}");
 
-        if (keyName == null)
-            throw new InvalidOperationException($"No key defined for {typeof(T).Name}");
+        // tránh cartesian explosion khi nhiều include
+        query = query.AsSplitQuery();
 
-        return await query.FirstOrDefaultAsync(
-            e => EF.Property<object>(e, keyName) == id, ct);
+        return await query.FirstOrDefaultAsync(e => EF.Property<object>(e, keyName) == id, ct);
     }
 
     public IQueryable<T> Query(bool asNoTracking = true)
