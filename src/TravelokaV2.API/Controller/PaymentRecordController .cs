@@ -9,10 +9,10 @@ namespace TravelokaV2.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PaymentRecordsController : ControllerBase
+    public class PaymentRecordController : ControllerBase
     {
         private readonly IPaymentRecordService _service;
-        public PaymentRecordsController(IPaymentRecordService service) => _service = service;
+        public PaymentRecordController(IPaymentRecordService service) => _service = service;
 
         [HttpPost]
         [Authorize]

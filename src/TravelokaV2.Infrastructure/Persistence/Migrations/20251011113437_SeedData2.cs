@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TravelokaV2.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class SeedData2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -553,7 +553,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifyAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdateBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RoomCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -565,17 +564,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         name: "FK_Rooms_BedTypes_BedTypeId",
                         column: x => x.BedTypeId,
                         principalTable: "BedTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Rooms_CancelPolicies_CancelPolicyId",
                         column: x => x.CancelPolicyId,
                         principalTable: "CancelPolicies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Rooms_RoomCategories_RoomCategoryId",
-                        column: x => x.RoomCategoryId,
+                        name: "FK_Rooms_RoomCategories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "RoomCategories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -586,7 +588,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PaymentMethodId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    AccomTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -616,7 +617,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 values: new object[,]
                 {
                     { new Guid("11111111-1111-1111-1111-111111111111"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Hotel", null },
-                    { new Guid("22222222-2222-2222-2222-222222222222"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Resort", null }
+                    { new Guid("22222222-2222-2222-2222-222222222222"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Resort", null },
+                    { new Guid("33333333-3333-3333-3333-333333333333"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Apartment", null },
+                    { new Guid("44444444-4444-4444-4444-444444444444"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Villa", null },
+                    { new Guid("55555555-5555-5555-5555-555555555555"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Hostel", null },
+                    { new Guid("66666666-6666-6666-6666-666666666666"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Guesthouse", null },
+                    { new Guid("77777777-7777-7777-7777-777777777777"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Homestay", null },
+                    { new Guid("88888888-8888-8888-8888-888888888888"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Motel", null },
+                    { new Guid("99999999-9999-9999-9999-999999999999"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Capsule", null },
+                    { new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Bungalow", null },
+                    { new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Farmstay", null },
+                    { new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Campsite", null },
+                    { new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Lodge", null },
+                    { new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Ryokan", null },
+                    { new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Riad", null }
                 });
 
             migrationBuilder.InsertData(
@@ -633,8 +647,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 columns: new[] { "Id", "CreatedAt", "ModifyAt", "Type", "UpdateBy" },
                 values: new object[,]
                 {
-                    { new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Queen", null },
-                    { new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Twin", null }
+                    { new Guid("dddddddd-dddd-dddd-dddd-dddddddddd04"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Queen", null },
+                    { new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeee05"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Twin", null }
                 });
 
             migrationBuilder.InsertData(
@@ -647,9 +661,9 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 columns: new[] { "Id", "CreatedAt", "Icon", "ModifyAt", "Name", "UpdateBy" },
                 values: new object[,]
                 {
-                    { new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "wifi", null, "Free Wi-Fi", null },
-                    { new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "pool", null, "Pool", null },
-                    { new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "dumbbell", null, "Gym", null }
+                    { new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "wifi", null, "Free Wi-Fi", null },
+                    { new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "pool", null, "Pool", null },
+                    { new Guid("cccccccc-cccc-cccc-cccc-cccccccccc03"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "dumbbell", null, "Gym", null }
                 });
 
             migrationBuilder.InsertData(
@@ -658,7 +672,22 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 values: new object[,]
                 {
                     { new Guid("99999999-0000-0000-0000-000000000001"), "Lobby", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "https://picsum.photos/id/1018/600/400" },
-                    { new Guid("99999999-0000-0000-0000-000000000002"), "Room", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "https://picsum.photos/id/1015/600/400" }
+                    { new Guid("99999999-0000-0000-0000-000000000002"), "Room", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "https://picsum.photos/id/1015/600/400" },
+                    { new Guid("99999999-0000-0000-0000-000000000003"), "Standard room", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "https://picsum.photos/id/1025/600/400" },
+                    { new Guid("99999999-0000-0000-0000-000000000004"), "Deluxe sea view", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, "https://picsum.photos/id/1039/600/400" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PaymentMethods",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("11112222-3333-4444-5555-666677778888"), "Cash" },
+                    { new Guid("22223333-4444-5555-6666-777788889999"), "Credit Card (Visa/Master)" },
+                    { new Guid("33334444-5555-6666-7777-88889999aaaa"), "Debit Card" },
+                    { new Guid("44445555-6666-7777-8888-9999aaaabbbb"), "MoMo" },
+                    { new Guid("55556666-7777-8888-9999-aaaabbbbcccc"), "ZaloPay" },
+                    { new Guid("66667777-8888-9999-aaaa-bbbbccccdddd"), "Bank Transfer" }
                 });
 
             migrationBuilder.InsertData(
@@ -671,23 +700,14 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Rooms",
-                columns: new[] { "Id", "Available", "BedTypeId", "Breakfast", "CancelPolicyId", "CategoryId", "CreatedAt", "DeletedAt", "DeletedBy", "IsDeleted", "ModifyAt", "Name", "NumberOfBeds", "Rating", "RoomCategoryId", "UpdateBy" },
-                values: new object[,]
-                {
-                    { new Guid("77777777-0000-0000-0000-000000000001"), true, new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"), true, new Guid("f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1"), new Guid("12121212-3434-5656-7878-909090909090"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, false, null, "A-101", 1, 8.5f, null, null },
-                    { new Guid("77777777-0000-0000-0000-000000000002"), true, new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"), true, new Guid("f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1"), new Guid("23232323-4545-6767-8989-010101010101"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, false, null, "B-201", 2, 9.2f, null, null }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Accom_Facilities",
                 columns: new[] { "Id", "AccomId", "FacilityId" },
                 values: new object[,]
                 {
-                    { new Guid("a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1"), new Guid("aaaa1111-2222-3333-4444-555566667777"), new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa") },
-                    { new Guid("b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"), new Guid("aaaa1111-2222-3333-4444-555566667777"), new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb") },
-                    { new Guid("c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3"), new Guid("bbbb1111-2222-3333-4444-555566667777"), new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa") },
-                    { new Guid("d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4"), new Guid("bbbb1111-2222-3333-4444-555566667777"), new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc") }
+                    { new Guid("a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1"), new Guid("aaaa1111-2222-3333-4444-555566667777"), new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01") },
+                    { new Guid("b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"), new Guid("aaaa1111-2222-3333-4444-555566667777"), new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02") },
+                    { new Guid("c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3"), new Guid("bbbb1111-2222-3333-4444-555566667777"), new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01") },
+                    { new Guid("d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4"), new Guid("bbbb1111-2222-3333-4444-555566667777"), new Guid("cccccccc-cccc-cccc-cccc-cccccccccc03") }
                 });
 
             migrationBuilder.InsertData(
@@ -707,6 +727,33 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 {
                     { new Guid("12121212-3434-5656-7878-909090909090"), "Cozy 20m2", new Guid("aaaa1111-2222-3333-4444-555566667777"), null, "[]", "[]", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, false, null, "Standard", "[]", null },
                     { new Guid("23232323-4545-6767-8989-010101010101"), "Spacious 32m2, balcony", new Guid("bbbb1111-2222-3333-4444-555566667777"), null, "[]", "[]", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, false, null, "Deluxe Sea View", "[]", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Room_Facilities",
+                columns: new[] { "Id", "FacilityId", "RoomCategoryId" },
+                values: new object[,]
+                {
+                    { new Guid("f1f1f1f1-1111-1111-1111-111111111111"), new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01"), new Guid("12121212-3434-5656-7878-909090909090") },
+                    { new Guid("f2f2f2f2-2222-2222-2222-222222222222"), new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02"), new Guid("23232323-4545-6767-8989-010101010101") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Room_Images",
+                columns: new[] { "Id", "ImageId", "RoomCategoryId" },
+                values: new object[,]
+                {
+                    { new Guid("a1a1a1a1-1111-1111-1111-111111111111"), new Guid("99999999-0000-0000-0000-000000000003"), new Guid("12121212-3434-5656-7878-909090909090") },
+                    { new Guid("a2a2a2a2-2222-2222-2222-222222222222"), new Guid("99999999-0000-0000-0000-000000000004"), new Guid("23232323-4545-6767-8989-010101010101") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Rooms",
+                columns: new[] { "Id", "Available", "BedTypeId", "Breakfast", "CancelPolicyId", "CategoryId", "CreatedAt", "DeletedAt", "DeletedBy", "IsDeleted", "ModifyAt", "Name", "NumberOfBeds", "Rating", "UpdateBy" },
+                values: new object[,]
+                {
+                    { new Guid("77777777-0000-0000-0000-000000000001"), true, new Guid("dddddddd-dddd-dddd-dddd-dddddddddd04"), true, new Guid("f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1"), new Guid("12121212-3434-5656-7878-909090909090"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, false, null, "A-101", 1, 8.5f, null },
+                    { new Guid("77777777-0000-0000-0000-000000000002"), true, new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeee05"), true, new Guid("f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1"), new Guid("23232323-4545-6767-8989-010101010101"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, null, false, null, "B-201", 2, 9.2f, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -848,9 +895,9 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 column: "CancelPolicyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rooms_RoomCategoryId",
+                name: "IX_Rooms_CategoryId",
                 table: "Rooms",
-                column: "RoomCategoryId");
+                column: "CategoryId");
         }
 
         /// <inheritdoc />

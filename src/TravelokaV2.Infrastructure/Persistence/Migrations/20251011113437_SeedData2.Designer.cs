@@ -12,8 +12,8 @@ using TravelokaV2.Infrastructure.Persistence;
 namespace TravelokaV2.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251010044215_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251011113437_SeedData2")]
+    partial class SeedData2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -206,6 +206,84 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Type = "Resort"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Apartment"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Villa"
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Hostel"
+                        },
+                        new
+                        {
+                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Guesthouse"
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-7777-7777-7777-777777777777"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Homestay"
+                        },
+                        new
+                        {
+                            Id = new Guid("88888888-8888-8888-8888-888888888888"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Motel"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Capsule"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Bungalow"
+                        },
+                        new
+                        {
+                            Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Farmstay"
+                        },
+                        new
+                        {
+                            Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Campsite"
+                        },
+                        new
+                        {
+                            Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Lodge"
+                        },
+                        new
+                        {
+                            Id = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Ryokan"
+                        },
+                        new
+                        {
+                            Id = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Riad"
                         });
                 });
 
@@ -235,25 +313,25 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1"),
                             AccomId = new Guid("aaaa1111-2222-3333-4444-555566667777"),
-                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01")
                         },
                         new
                         {
                             Id = new Guid("b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"),
                             AccomId = new Guid("aaaa1111-2222-3333-4444-555566667777"),
-                            FacilityId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
+                            FacilityId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02")
                         },
                         new
                         {
                             Id = new Guid("c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3"),
                             AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
-                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01")
                         },
                         new
                         {
                             Id = new Guid("d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4"),
                             AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
-                            FacilityId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc")
+                            FacilityId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccc03")
                         });
                 });
 
@@ -443,13 +521,13 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                            Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddd04"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Type = "Queen"
                         },
                         new
                         {
-                            Id = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                            Id = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeee05"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Type = "Twin"
                         });
@@ -514,21 +592,21 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Icon = "wifi",
                             Name = "Free Wi-Fi"
                         },
                         new
                         {
-                            Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                            Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Icon = "pool",
                             Name = "Pool"
                         },
                         new
                         {
-                            Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                            Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccc03"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Icon = "dumbbell",
                             Name = "Gym"
@@ -615,6 +693,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             Alt = "Room",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Url = "https://picsum.photos/id/1015/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000003"),
+                            Alt = "Standard room",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1025/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000004"),
+                            Alt = "Deluxe sea view",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1039/600/400"
                         });
                 });
 
@@ -630,15 +722,44 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentMethods", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11112222-3333-4444-5555-666677778888"),
+                            Name = "Cash"
+                        },
+                        new
+                        {
+                            Id = new Guid("22223333-4444-5555-6666-777788889999"),
+                            Name = "Credit Card (Visa/Master)"
+                        },
+                        new
+                        {
+                            Id = new Guid("33334444-5555-6666-7777-88889999aaaa"),
+                            Name = "Debit Card"
+                        },
+                        new
+                        {
+                            Id = new Guid("44445555-6666-7777-8888-9999aaaabbbb"),
+                            Name = "MoMo"
+                        },
+                        new
+                        {
+                            Id = new Guid("55556666-7777-8888-9999-aaaabbbbcccc"),
+                            Name = "ZaloPay"
+                        },
+                        new
+                        {
+                            Id = new Guid("66667777-8888-9999-aaaa-bbbbccccdddd"),
+                            Name = "Bank Transfer"
+                        });
                 });
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.PaymentRecord", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AccomTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("PaymentMethodId")
@@ -806,9 +927,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.Property<float?>("Rating")
                         .HasColumnType("real");
 
-                    b.Property<Guid?>("RoomCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("UpdateBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -818,16 +936,16 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CancelPolicyId");
 
-                    b.HasIndex("RoomCategoryId");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("77777777-0000-0000-0000-000000000001"),
                             Available = true,
-                            BedTypeId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                            BedTypeId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddd04"),
                             Breakfast = true,
                             CancelPolicyId = new Guid("f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1"),
                             CategoryId = new Guid("12121212-3434-5656-7878-909090909090"),
@@ -841,7 +959,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("77777777-0000-0000-0000-000000000002"),
                             Available = true,
-                            BedTypeId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                            BedTypeId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeee05"),
                             Breakfast = true,
                             CancelPolicyId = new Guid("f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1"),
                             CategoryId = new Guid("23232323-4545-6767-8989-010101010101"),
@@ -956,6 +1074,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Room_Facilities", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("f1f1f1f1-1111-1111-1111-111111111111"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01"),
+                            RoomCategoryId = new Guid("12121212-3434-5656-7878-909090909090")
+                        },
+                        new
+                        {
+                            Id = new Guid("f2f2f2f2-2222-2222-2222-222222222222"),
+                            FacilityId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02"),
+                            RoomCategoryId = new Guid("23232323-4545-6767-8989-010101010101")
+                        });
                 });
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.Room_Image", b =>
@@ -978,6 +1110,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Room_Images", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a1a1a1a1-1111-1111-1111-111111111111"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000003"),
+                            RoomCategoryId = new Guid("12121212-3434-5656-7878-909090909090")
+                        },
+                        new
+                        {
+                            Id = new Guid("a2a2a2a2-2222-2222-2222-222222222222"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000004"),
+                            RoomCategoryId = new Guid("23232323-4545-6767-8989-010101010101")
+                        });
                 });
 
             modelBuilder.Entity("TravelokaV2.Infrastructure.Identity.AppUser", b =>
@@ -1229,15 +1375,18 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("TravelokaV2.Domain.Entities.BedType", "BedType")
                         .WithMany()
-                        .HasForeignKey("BedTypeId");
+                        .HasForeignKey("BedTypeId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("TravelokaV2.Domain.Entities.CancelPolicy", "CancelPolicy")
                         .WithMany()
-                        .HasForeignKey("CancelPolicyId");
+                        .HasForeignKey("CancelPolicyId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("TravelokaV2.Domain.Entities.RoomCategory", "RoomCategory")
                         .WithMany("Rooms")
-                        .HasForeignKey("RoomCategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("BedType");
 
