@@ -27,5 +27,9 @@ namespace TravelokaV2.Application.Services
         Task<PolicyDto?> GetPolicyAsync(Guid accomId, CancellationToken ct);
         Task UpsertPolicyAsync(Guid accomId, PolicyUpdateDto dto, CancellationToken ct);
         Task DeletePolicyAsync(Guid accomId, CancellationToken ct);
+
+        // ==== Assign Images ====
+        Task LinkImageAsync(Guid accomId, Guid imageId, CancellationToken ct);
+        Task UnlinkImageAsync(Guid accomId, Guid imageId, CancellationToken ct);
     }
 }

@@ -82,6 +82,8 @@ namespace TravelokaV2.Infrastructure
 
             services.AddScoped<IAccommodationService, AccommodationService>();
             services.AddScoped<IAccomTypeService, AccomTypeService>();
+            services.AddScoped<IFacilityService, FacilityService>();
+            services.AddScoped<IImageService, ImageService>();
             return services;
         }
     }

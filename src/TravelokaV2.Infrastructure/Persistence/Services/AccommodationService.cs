@@ -212,5 +212,40 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             await _uow.SaveChangesAsync(ct);
         }
         #endregion
+
+        #region Assign Images
+        public async Task LinkImageAsync(Guid accomId, Guid imageId, CancellationToken ct)
+        {
+            var accomExists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
+            if (!accomExists) throw new KeyNotFoundException("Accommodation Not Found");
+
+            var imgExists = await _uow.Images.Query().AnyAsync(i => i.Id == imageId, ct);
+            if (!imgExists) throw new KeyNotFoundException("Image Not Found");
+
+            var exists = await _uow.AccomImages.Query()
+                .AnyAsync(x => x.AccomId == accomId && x.ImageId == imageId, ct);
+            if (exists) return;
+
+            await _uow.AccomImages.AddAsync(new Accom_Image
+            {
+                Id = Guid.NewGuid(),
+                AccomId = accomId,
+                ImageId = imageId
+            }, ct);
+
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task UnlinkImageAsync(Guid accomId, Guid imageId, CancellationToken ct)
+        {
+            var link = await _uow.AccomImages.Query()
+                .FirstOrDefaultAsync(x => x.AccomId == accomId && x.ImageId == imageId, ct);
+
+            if (link == null) throw new KeyNotFoundException("Image link Not Found");
+
+            _uow.AccomImages.Remove(link);
+            await _uow.SaveChangesAsync(ct);
+        }
+        #endregion
     }
 }

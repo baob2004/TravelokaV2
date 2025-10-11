@@ -89,7 +89,7 @@ namespace TravelokaV2.Application.Mapping
             CreateMap<AccomTypeUpdateDto, AccomType>();
 
             // ========== Join Entities (assign DTOs đơn giản) ==========
-            CreateMap<AccomImageCreateDto, Accom_Image>();
+            CreateMap<AccomImageAssignDto, Accom_Image>();
             CreateMap<AccomReviewCreateDto, Accom_RR>();
             CreateMap<AccomFacilityCreateDto, Accom_Facility>();
 

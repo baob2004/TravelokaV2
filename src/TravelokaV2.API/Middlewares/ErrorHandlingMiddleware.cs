@@ -5,18 +5,18 @@ namespace TravelokaV2.API.Middlewares;
 
 public sealed class ErrorHandlingMiddleware : IMiddleware
 {
-    private readonly ILogger<ErrorHandlingMiddleware> _logger;
     private readonly IHostEnvironment _env;
+    private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
-    public ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger, IHostEnvironment env)
+    public ErrorHandlingMiddleware(IHostEnvironment env, ILogger<ErrorHandlingMiddleware> logger)
     {
-        _logger = logger;
         _env = env;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var correlationId = EnsureCorrelationId(context);
+        var traceId = context.TraceIdentifier;
 
         try
         {
@@ -24,60 +24,52 @@ public sealed class ErrorHandlingMiddleware : IMiddleware
         }
         catch (Exception ex)
         {
-            // Log với correlationId
-            _logger.LogError(ex, "Unhandled exception. CorrelationId={CorrelationId}", correlationId);
+            _logger.LogError(ex, "Unhandled exception. TraceId={TraceId}", traceId);
 
-            await WriteProblemDetailsAsync(context, ex, correlationId);
+            if (context.Response.HasStarted) throw;
+
+            var (status, title) = Map(ex);
+
+            var problem = new
+            {
+                type = $"about:blank",
+                title,
+                status = (int)status,
+                message = GetUserMessage(ex),
+                traceId,
+                path = context.Request.Path.Value,
+                method = context.Request.Method,
+                // chỉ show stack ở Dev
+                detail = _env.IsDevelopment() ? ex.ToString() : null
+            };
+
+            context.Response.ContentType = "application/problem+json";
+            context.Response.StatusCode = (int)status;
+
+            var json = JsonSerializer.Serialize(problem, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = _env.IsDevelopment()
+            });
+
+            await context.Response.WriteAsync(json);
         }
     }
 
-    private static string EnsureCorrelationId(HttpContext ctx)
+    private static (HttpStatusCode, string) Map(Exception ex) => ex switch
     {
-        const string header = "X-Correlation-Id";
-        if (!ctx.Request.Headers.TryGetValue(header, out var value) || string.IsNullOrWhiteSpace(value))
-        {
-            value = Guid.NewGuid().ToString("N");
-            ctx.Request.Headers[header] = value;
-        }
-        ctx.Response.Headers[header] = value!;
-        return value!;
-    }
+        KeyNotFoundException => (HttpStatusCode.NotFound, "Resource Not Found"),
+        UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Unauthorized"),
+        ArgumentException => (HttpStatusCode.BadRequest, "Invalid Argument"),
+        InvalidOperationException => (HttpStatusCode.BadRequest, "Invalid Operation"),
+        _ => (HttpStatusCode.InternalServerError, "Internal Server Error")
+    };
 
-    private async Task WriteProblemDetailsAsync(HttpContext context, Exception ex, string correlationId)
+    private static string GetUserMessage(Exception ex) => ex switch
     {
-        var (status, title) = MapException(ex);
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)status;
-
-        var problem = new
-        {
-            type = "https://httpstatuses.com/" + (int)status,
-            title,
-            status = (int)status,
-            traceId = correlationId,
-            errors = (object?)null, // dành chỗ cho validation nếu muốn
-            detail = _env.IsDevelopment() ? ex.ToString() : null // chỉ hiện stack ở Dev
-        };
-
-        var json = JsonSerializer.Serialize(problem, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = _env.IsDevelopment()
-        });
-
-        await context.Response.WriteAsync(json);
-    }
-
-    private static (HttpStatusCode status, string title) MapException(Exception ex)
-    {
-        // Tuỳ biến mapping theo domain của bạn:
-        return ex switch
-        {
-            UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Unauthorized"),
-            KeyNotFoundException => (HttpStatusCode.NotFound, "Resource Not Found"),
-            InvalidOperationException => (HttpStatusCode.BadRequest, "Invalid Operation"),
-            ArgumentException => (HttpStatusCode.BadRequest, "Invalid Argument"),
-            _ => (HttpStatusCode.InternalServerError, "Internal Server Error")
-        };
-    }
+        KeyNotFoundException knf => knf.Message,
+        ArgumentException aex => aex.Message,
+        InvalidOperationException ioe => ioe.Message,
+        _ => "Something went wrong. Please try again later."
+    };
 }
