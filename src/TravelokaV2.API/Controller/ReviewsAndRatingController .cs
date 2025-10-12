@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.ReviewsAndRating;
 using TravelokaV2.Application.Services;
@@ -16,9 +18,18 @@ namespace TravelokaV2.API.Controllers
             => Ok(await _service.GetByAccommodationAsync(accomId, ct));
 
         [HttpPost("Accommodations/{accomId:guid}")]
+        [Authorize]
         public async Task<ActionResult<Guid>> Create(Guid accomId, [FromBody] ReviewCreateDto dto, CancellationToken ct)
         {
-            var id = await _service.CreateAsync(accomId, dto, ct);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                       ?? User.FindFirst("sub")?.Value;
+            if (string.IsNullOrWhiteSpace(userId)) return Unauthorized();
+
+            var userName = User.Identity?.Name
+                       ?? User.FindFirst("name")?.Value
+                       ?? User.FindFirst("preferred_username")?.Value;
+
+            var id = await _service.CreateAsync(accomId, dto, userId, userName, ct);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 

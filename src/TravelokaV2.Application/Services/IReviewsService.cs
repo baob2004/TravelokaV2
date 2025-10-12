@@ -6,7 +6,7 @@ namespace TravelokaV2.Application.Services
     {
         Task<ReviewDto?> GetByIdAsync(Guid id, CancellationToken ct);
         Task<IEnumerable<ReviewDto>> GetByAccommodationAsync(Guid accomId, CancellationToken ct);
-        Task<Guid> CreateAsync(Guid accomId, ReviewCreateDto dto, CancellationToken ct);
+        Task<Guid> CreateAsync(Guid accomId, ReviewCreateDto dto, string currentUserId, string? currentUserName, CancellationToken ct);
         Task UpdateAsync(Guid id, ReviewUpdateDto dto, CancellationToken ct);
         Task DeleteAsync(Guid id, CancellationToken ct);
     }

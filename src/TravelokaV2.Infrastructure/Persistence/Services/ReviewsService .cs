@@ -84,15 +84,18 @@ namespace TravelokaV2.Application.Services
             return dtos;
         }
 
-        public async Task<Guid> CreateAsync(Guid accomId, ReviewCreateDto dto, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid accomId, ReviewCreateDto dto, string currentUserId, string? currentUserName, CancellationToken ct)
         {
             if (dto == null) throw new ArgumentNullException(nameof(dto));
+            if (string.IsNullOrWhiteSpace(currentUserId)) throw new UnauthorizedAccessException("User not authenticated.");
 
             var exists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
             if (!exists) throw new KeyNotFoundException("Accommodation Not Found");
 
             var rr = _mapper.Map<ReviewsAndRating>(dto);
             rr.CreatedAt = DateTime.UtcNow;
+            rr.UserId = currentUserId;
+            rr.CreatedBy = currentUserName;
 
             await _uow.ReviewsAndRatings.AddAsync(rr, ct);
             await _uow.SaveChangesAsync(ct);
