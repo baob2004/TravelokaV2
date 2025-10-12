@@ -10,5 +10,7 @@ namespace TravelokaV2.Application.Services
         Task<Guid> CreateAsync(RoomCreateDto dto, CancellationToken ct);
         Task UpdateAsync(Guid id, RoomUpdateDto dto, CancellationToken ct);
         Task DeleteAsync(Guid id, CancellationToken ct);
+
+        Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<RoomCreateDto> dtos, CancellationToken ct);
     }
 }

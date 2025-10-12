@@ -104,5 +104,72 @@ namespace TravelokaV2.Application.Services
             _uow.Rooms.Remove(entity);
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<RoomCreateDto> dtos, CancellationToken ct)
+        {
+            if (dtos is null) throw new ArgumentNullException(nameof(dtos));
+            var items = dtos.ToList();
+            if (items.Count == 0) return Array.Empty<Guid>();
+
+            foreach (var d in items)
+                if (string.IsNullOrWhiteSpace(d.Name))
+                    throw new ArgumentException("Name is required.");
+
+            var categoryIds = items.Where(x => x.CategoryId.HasValue)
+                                   .Select(x => x.CategoryId!.Value)
+                                   .Distinct()
+                                   .ToList();
+            if (categoryIds.Count > 0)
+            {
+                var exist = await _uow.RoomCategories.Query()
+                    .Where(rc => categoryIds.Contains(rc.Id))
+                    .Select(rc => rc.Id)
+                    .ToListAsync(ct);
+                var missing = categoryIds.Except(exist).ToList();
+                if (missing.Count > 0) throw new KeyNotFoundException("One or more RoomCategory not found.");
+            }
+
+            var bedTypeIds = items.Where(x => x.BedTypeId.HasValue)
+                                  .Select(x => x.BedTypeId!.Value)
+                                  .Distinct()
+                                  .ToList();
+            if (bedTypeIds.Count > 0)
+            {
+                var exist = await _uow.BedTypes.Query()
+                    .Where(b => bedTypeIds.Contains(b.Id))
+                    .Select(b => b.Id)
+                    .ToListAsync(ct);
+                var missing = bedTypeIds.Except(exist).ToList();
+                if (missing.Count > 0) throw new KeyNotFoundException("One or more BedType not found.");
+            }
+
+            var cancelIds = items.Where(x => x.CancelPolicyId.HasValue)
+                                 .Select(x => x.CancelPolicyId!.Value)
+                                 .Distinct()
+                                 .ToList();
+            if (cancelIds.Count > 0)
+            {
+                var exist = await _uow.CancelPolicies.Query()
+                    .Where(c => cancelIds.Contains(c.Id))
+                    .Select(c => c.Id)
+                    .ToListAsync(ct);
+                var missing = cancelIds.Except(exist).ToList();
+                if (missing.Count > 0) throw new KeyNotFoundException("One or more CancelPolicy not found.");
+            }
+
+            var now = DateTime.UtcNow;
+            var entities = items.Select(d =>
+            {
+                var e = _mapper.Map<Room>(d);
+                e.CreatedAt = now;
+                return e;
+            }).ToList();
+
+            foreach (var e in entities)
+                await _uow.Rooms.AddAsync(e, ct);
+
+            await _uow.SaveChangesAsync(ct);
+            return entities.Select(e => e.Id).ToList();
+        }
     }
 }
