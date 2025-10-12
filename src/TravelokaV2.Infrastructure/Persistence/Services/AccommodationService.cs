@@ -128,6 +128,47 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             return entity.Id;
         }
 
+        public async Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<AccomCreateDto> dtos, CancellationToken ct)
+        {
+            if (dtos is null) throw new ArgumentNullException(nameof(dtos));
+            var items = dtos.ToList();
+            if (items.Count == 0) return Array.Empty<Guid>();
+
+            foreach (var d in items)
+                if (string.IsNullOrWhiteSpace(d.Name))
+                    throw new ArgumentException("Name is required.");
+
+            var typeIds = items.Where(d => d.AccomTypeId.HasValue)
+                               .Select(d => d.AccomTypeId!.Value)
+                               .Distinct()
+                               .ToList();
+
+            if (typeIds.Count > 0)
+            {
+                var existIds = await _uow.AccomTypes.Query()
+                    .Where(t => typeIds.Contains(t.Id))
+                    .Select(t => t.Id)
+                    .ToListAsync(ct);
+
+                var missing = typeIds.Except(existIds).ToList();
+                if (missing.Count > 0)
+                    throw new KeyNotFoundException("One or more AccomType not found.");
+            }
+
+            var entities = items.Select(d =>
+            {
+                var e = _mapper.Map<Accommodation>(d);
+                e.CreatedAt = DateTime.UtcNow;
+                return e;
+            }).ToList();
+
+            foreach (var e in entities)
+                await _uow.Accommodations.AddAsync(e, ct);
+
+            await _uow.SaveChangesAsync(ct);
+
+            return entities.Select(e => e.Id).ToList();
+        }
 
         public async Task UpdateAsync(Guid id, AccomUpdateDto dto, CancellationToken ct)
         {

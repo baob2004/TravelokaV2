@@ -40,6 +40,13 @@ namespace TravelokaV2.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
+        [HttpPost("bulk")]
+        public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<AccomCreateDto> dtos, CancellationToken ct)
+        {
+            var ids = await _service.CreateManyAsync(dtos, ct);
+            return Ok(ids);
+        }
+
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] AccomUpdateDto dto, CancellationToken ct)
         {
