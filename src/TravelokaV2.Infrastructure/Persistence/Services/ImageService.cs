@@ -79,5 +79,46 @@ namespace TravelokaV2.Application.Services
             _uow.Images.Remove(entity);
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<ImageCreateDto> dtos, CancellationToken ct)
+        {
+            if (dtos is null) throw new ArgumentNullException(nameof(dtos));
+            var inputs = dtos.ToList();
+            if (inputs.Count == 0) return Array.Empty<Guid>();
+
+            foreach (var d in inputs)
+                if (string.IsNullOrWhiteSpace(d.Url))
+                    throw new ArgumentException("Url is required.", nameof(d.Url));
+
+            var now = DateTime.UtcNow;
+
+            var existingUrls = await _uow.Images.Query()
+                .Where(i => i.Url != null)
+                .Select(i => i.Url!)
+                .ToListAsync(ct);
+
+            var existingSet = new HashSet<string>(existingUrls.Select(u => u.ToLowerInvariant()));
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var toCreate = new List<Image>();
+
+            foreach (var d in inputs)
+            {
+                var url = d.Url!.Trim();
+                if (!seen.Add(url)) continue;
+                if (existingSet.Contains(url.ToLowerInvariant())) continue;
+
+                var entity = _mapper.Map<Image>(d);
+                entity.CreatedAt = now;
+                toCreate.Add(entity);
+            }
+
+            if (toCreate.Count == 0) return Array.Empty<Guid>();
+
+            foreach (var e in toCreate)
+                await _uow.Images.AddAsync(e, ct);
+
+            await _uow.SaveChangesAsync(ct);
+            return toCreate.Select(e => e.Id).ToList();
+        }
     }
 }

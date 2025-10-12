@@ -76,5 +76,55 @@ namespace TravelokaV2.Application.Services
             _uow.Facilities.Remove(entity); // soft delete nếu entity implement ISoftDelete
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<FacilityCreateDto> dtos, CancellationToken ct)
+        {
+            if (dtos is null) throw new ArgumentNullException(nameof(dtos));
+            var inputs = dtos.ToList();
+            if (inputs.Count == 0) return Array.Empty<Guid>();
+
+            foreach (var d in inputs)
+                if (string.IsNullOrWhiteSpace(d.Name))
+                    throw new ArgumentException("Name is required.");
+
+            var now = DateTime.UtcNow;
+
+            var incomingNames = inputs
+                .Select(d => d.Name!.Trim())
+                .Where(s => s.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var existingNames = await _uow.Facilities.Query()
+                .Where(f => f.Name != null)
+                .Select(f => f.Name!)
+                .ToListAsync(ct);
+
+            var existingSet = new HashSet<string>(
+                existingNames.Select(n => n.ToLowerInvariant())
+            );
+
+            var toCreate = new List<Facility>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var d in inputs)
+            {
+                var name = d.Name!.Trim();
+                if (!seen.Add(name)) continue;                // bỏ trùng trong request
+                if (existingSet.Contains(name.ToLowerInvariant())) continue; // bỏ trùng DB
+
+                var entity = _mapper.Map<Facility>(d);
+                entity.CreatedAt = now;
+                toCreate.Add(entity);
+            }
+
+            if (toCreate.Count == 0) return Array.Empty<Guid>();
+
+            foreach (var e in toCreate)
+                await _uow.Facilities.AddAsync(e, ct);
+
+            await _uow.SaveChangesAsync(ct);
+            return toCreate.Select(e => e.Id).ToList();
+        }
     }
 }
