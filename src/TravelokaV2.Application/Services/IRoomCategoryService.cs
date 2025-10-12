@@ -15,5 +15,7 @@ namespace TravelokaV2.Application.Services
 
         Task LinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct);
         Task UnlinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct);
+
+        Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<RoomCategoryCreateDto> dtos, CancellationToken ct);
     }
 }

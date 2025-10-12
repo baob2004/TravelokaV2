@@ -69,5 +69,12 @@ namespace TravelokaV2.API.Controllers
             await _service.UnlinkImageAsync(roomCategoryId, imageId, ct);
             return NoContent();
         }
+
+        [HttpPost("bulk")]
+        public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<RoomCategoryCreateDto> dtos, CancellationToken ct)
+        {
+            var ids = await _service.CreateManyAsync(dtos, ct);
+            return Ok(ids);
+        }
     }
 }

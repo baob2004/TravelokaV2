@@ -161,5 +161,67 @@ namespace TravelokaV2.Application.Services
             _uow.RoomImages.Remove(link);
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<RoomCategoryCreateDto> dtos, CancellationToken ct)
+        {
+            if (dtos is null) throw new ArgumentNullException(nameof(dtos));
+            var inputs = dtos.ToList();
+            if (inputs.Count == 0) return Array.Empty<Guid>();
+
+            foreach (var d in inputs)
+                if (string.IsNullOrWhiteSpace(d.Name))
+                    throw new ArgumentException("Name is required.", nameof(d.Name));
+
+            var accomIds = inputs.Where(x => x.AccomId.HasValue)
+                                 .Select(x => x.AccomId!.Value)
+                                 .Distinct()
+                                 .ToList();
+
+            if (accomIds.Count > 0)
+            {
+                var existingAccomIds = await _uow.Accommodations.Query()
+                    .Where(a => accomIds.Contains(a.Id))
+                    .Select(a => a.Id)
+                    .ToListAsync(ct);
+
+                var missing = accomIds.Except(existingAccomIds).ToList();
+                if (missing.Count > 0)
+                    throw new KeyNotFoundException("One or more Accommodation not found.");
+            }
+
+            // Chống trùng theo (Name, AccomId)
+            var pairs = inputs
+                .Where(x => x.AccomId.HasValue)
+                .Select(x => new { x.Name, x.AccomId!.Value })
+                .ToList();
+
+            if (pairs.Count > 0)
+            {
+                var dupDb = await _uow.RoomCategories.Query()
+                    .Where(rc => rc.AccomId != null &&
+                                 pairs.Select(p => p.Value).Contains(rc.AccomId.Value) &&
+                                 pairs.Select(p => p.Name).Contains(rc.Name!))
+                    .Select(rc => new { rc.Name, rc.AccomId })
+                    .ToListAsync(ct);
+
+                // nếu không muốn chặn trùng DB thì có thể bỏ khối này
+                if (dupDb.Any())
+                    throw new InvalidOperationException("Some RoomCategories already exist for given accommodation(s).");
+            }
+
+            var now = DateTime.UtcNow;
+            var entities = inputs.Select(d =>
+            {
+                var e = _mapper.Map<RoomCategory>(d);
+                e.CreatedAt = now;
+                return e;
+            }).ToList();
+
+            foreach (var e in entities)
+                await _uow.RoomCategories.AddAsync(e, ct);
+
+            await _uow.SaveChangesAsync(ct);
+            return entities.Select(e => e.Id).ToList();
+        }
     }
 }
