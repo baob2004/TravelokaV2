@@ -122,6 +122,12 @@ namespace TravelokaV2.API.Controllers
             await _service.UnlinkImageAsync(accomId, imageId, ct);
             return NoContent();
         }
+
+        [HttpPost("{accomId:guid}/images/bulk")]
+        public async Task<ActionResult<int>> LinkImages(Guid accomId, [FromBody] List<Guid> imageIds, CancellationToken ct)
+            => Ok(await _service.LinkImagesAsync(accomId, imageIds, ct));
+
+
         #endregion
 
         #region Assign Facility
@@ -138,6 +144,10 @@ namespace TravelokaV2.API.Controllers
             await _service.UnlinkFacilityAsync(accomId, facilityId, ct);
             return NoContent();
         }
+
+        [HttpPost("{accomId:guid}/facilities/bulk")]
+        public async Task<ActionResult<int>> LinkFacilities(Guid accomId, [FromBody] List<Guid> facilityIds, CancellationToken ct)
+            => Ok(await _service.LinkFacilitiesAsync(accomId, facilityIds, ct));
         #endregion
 
     }

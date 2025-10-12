@@ -297,6 +297,42 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             _uow.AccomImages.Remove(link);
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task<int> LinkImagesAsync(Guid accomId, IEnumerable<Guid> imageIds, CancellationToken ct)
+        {
+            if (imageIds is null) throw new ArgumentNullException(nameof(imageIds));
+            var ids = imageIds.Where(x => x != Guid.Empty).Distinct().ToList();
+            if (ids.Count == 0) return 0;
+
+            var accomExists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
+            if (!accomExists) throw new KeyNotFoundException("Accommodation not found.");
+
+            var existImgs = await _uow.Images.Query()
+                .Where(i => ids.Contains(i.Id))
+                .Select(i => i.Id)
+                .ToListAsync(ct);
+            var missing = ids.Except(existImgs).ToList();
+            if (missing.Count > 0) throw new KeyNotFoundException("One or more images not found.");
+
+            var already = await _uow.AccomImages.Query()
+                .Where(ai => ai.AccomId == accomId && ids.Contains(ai.ImageId))
+                .Select(ai => ai.ImageId)
+                .ToListAsync(ct);
+
+            var toAdd = ids.Except(already).ToList();
+            foreach (var id in toAdd)
+            {
+                await _uow.AccomImages.AddAsync(new Accom_Image
+                {
+                    Id = Guid.NewGuid(),
+                    AccomId = accomId,
+                    ImageId = id
+                }, ct);
+            }
+
+            if (toAdd.Count > 0) await _uow.SaveChangesAsync(ct);
+            return toAdd.Count;
+        }
         #endregion
 
         #region Assign Facility
@@ -331,6 +367,42 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
             _uow.AccomFacilities.Remove(link);
             await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task<int> LinkFacilitiesAsync(Guid accomId, IEnumerable<Guid> facilityIds, CancellationToken ct)
+        {
+            if (facilityIds is null) throw new ArgumentNullException(nameof(facilityIds));
+            var ids = facilityIds.Where(x => x != Guid.Empty).Distinct().ToList();
+            if (ids.Count == 0) return 0;
+
+            var accomExists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
+            if (!accomExists) throw new KeyNotFoundException("Accommodation not found.");
+
+            var existFacs = await _uow.Facilities.Query()
+                .Where(f => ids.Contains(f.Id))
+                .Select(f => f.Id)
+                .ToListAsync(ct);
+            var missing = ids.Except(existFacs).ToList();
+            if (missing.Count > 0) throw new KeyNotFoundException("One or more facilities not found.");
+
+            var already = await _uow.AccomFacilities.Query()
+                .Where(af => af.AccomId == accomId && ids.Contains(af.FacilityId))
+                .Select(af => af.FacilityId)
+                .ToListAsync(ct);
+
+            var toAdd = ids.Except(already).ToList();
+            foreach (var id in toAdd)
+            {
+                await _uow.AccomFacilities.AddAsync(new Accom_Facility
+                {
+                    Id = Guid.NewGuid(),
+                    AccomId = accomId,
+                    FacilityId = id
+                }, ct);
+            }
+
+            if (toAdd.Count > 0) await _uow.SaveChangesAsync(ct);
+            return toAdd.Count;
         }
         #endregion
     }
