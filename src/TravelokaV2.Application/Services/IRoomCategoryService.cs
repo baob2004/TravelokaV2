@@ -12,9 +12,12 @@ namespace TravelokaV2.Application.Services
 
         Task LinkFacilityAsync(Guid roomCategoryId, Guid facilityId, CancellationToken ct);
         Task UnlinkFacilityAsync(Guid roomCategoryId, Guid facilityId, CancellationToken ct);
+        Task<int> LinkFacilitiesAsync(Guid roomCategoryId, IEnumerable<Guid> facilityIds, CancellationToken ct);
 
         Task LinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct);
         Task UnlinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct);
+        Task<int> LinkImagesAsync(Guid roomCategoryId, IEnumerable<Guid> imageIds, CancellationToken ct);
+
 
         Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<RoomCategoryCreateDto> dtos, CancellationToken ct);
     }

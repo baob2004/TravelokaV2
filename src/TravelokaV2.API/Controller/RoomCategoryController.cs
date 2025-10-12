@@ -55,6 +55,10 @@ namespace TravelokaV2.API.Controllers
             return NoContent();
         }
 
+        [HttpPost("{roomCategoryId:guid}/facilities/bulk")]
+        public async Task<ActionResult<int>> LinkFacilities(Guid roomCategoryId, [FromBody] List<Guid> facilityIds, CancellationToken ct)
+            => Ok(await _service.LinkFacilitiesAsync(roomCategoryId, facilityIds, ct));
+
         // ===== Images =====
         [HttpPost("{roomCategoryId:guid}/images/{imageId:guid}")]
         public async Task<IActionResult> LinkImage(Guid roomCategoryId, Guid imageId, CancellationToken ct)
@@ -69,6 +73,10 @@ namespace TravelokaV2.API.Controllers
             await _service.UnlinkImageAsync(roomCategoryId, imageId, ct);
             return NoContent();
         }
+
+        [HttpPost("{roomCategoryId:guid}/images/bulk")]
+        public async Task<ActionResult<int>> LinkImages(Guid roomCategoryId, [FromBody] List<Guid> imageIds, CancellationToken ct)
+            => Ok(await _service.LinkImagesAsync(roomCategoryId, imageIds, ct));
 
         [HttpPost("bulk")]
         public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<RoomCategoryCreateDto> dtos, CancellationToken ct)
