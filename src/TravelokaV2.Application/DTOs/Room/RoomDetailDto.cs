@@ -9,7 +9,7 @@ namespace TravelokaV2.Application.DTOs.Room
         public int? NumberOfBeds { get; set; }
         public bool? Available { get; set; }
         public float? Rating { get; set; }
-
+        public decimal? Price { get; set; }
         public Guid? BedTypeId { get; set; }
         public string? BedTypeName { get; set; }
 

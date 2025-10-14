@@ -1340,6 +1340,9 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.Property<int?>("NumberOfBeds")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<float?>("Rating")
                         .HasColumnType("real");
 
@@ -1369,6 +1372,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "A-101",
                             NumberOfBeds = 1,
+                            Price = 850000m,
                             Rating = 8.5f
                         },
                         new
@@ -1383,6 +1387,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "B-201",
                             NumberOfBeds = 2,
+                            Price = 1250000m,
                             Rating = 9.2f
                         },
                         new
@@ -1397,6 +1402,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "A-102",
                             NumberOfBeds = 1,
+                            Price = 780000m,
                             Rating = 8.1f
                         },
                         new
@@ -1411,6 +1417,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "A-103",
                             NumberOfBeds = 1,
+                            Price = 990000m,
                             Rating = 8.3f
                         },
                         new
@@ -1425,6 +1432,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "A-104",
                             NumberOfBeds = 2,
+                            Price = 1650000m,
                             Rating = 8.9f
                         },
                         new
@@ -1439,6 +1447,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "B-202",
                             NumberOfBeds = 1,
+                            Price = 880000m,
                             Rating = 8.7f
                         },
                         new
@@ -1453,6 +1462,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "B-203",
                             NumberOfBeds = 2,
+                            Price = 1120000m,
                             Rating = 8.8f
                         },
                         new
@@ -1467,6 +1477,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "G-301",
                             NumberOfBeds = 1,
+                            Price = 720000m,
                             Rating = 8f
                         },
                         new
@@ -1481,6 +1492,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "D-401",
                             NumberOfBeds = 1,
+                            Price = 1320000m,
                             Rating = 8.6f
                         },
                         new
@@ -1495,6 +1507,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "E-501",
                             NumberOfBeds = 2,
+                            Price = 980000m,
                             Rating = 8.2f
                         });
                 });

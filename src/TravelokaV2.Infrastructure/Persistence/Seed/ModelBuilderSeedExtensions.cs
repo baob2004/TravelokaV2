@@ -426,16 +426,16 @@ namespace TravelokaV2.Infrastructure.Persistence.Seed
 
             // ===== Phòng =====
             b.Entity<Room>().HasData(
-                new Room { Id = Room_A101, Name = "A-101", Breakfast = true, NumberOfBeds = 1, BedTypeId = BedType_Queen, CancelPolicyId = CancelPolicy_Flex, Available = true, CategoryId = RC_AlphaStd, Rating = 8.5f, CreatedAt = SeedNow },
-                new Room { Id = Room_B201, Name = "B-201", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_Twin, CancelPolicyId = CancelPolicy_Flex, Available = true, CategoryId = RC_BetaDelx, Rating = 9.2f, CreatedAt = SeedNow },
-                new Room { Id = Room_A102, Name = "A-102", Breakfast = false, NumberOfBeds = 1, BedTypeId = BedType_Single, CancelPolicyId = CancelPolicy_48h, Available = true, CategoryId = RC_AlphaStd, Rating = 8.1f, CreatedAt = SeedNow },
-                new Room { Id = Room_A103, Name = "A-103", Breakfast = true, NumberOfBeds = 1, BedTypeId = BedType_Double, CancelPolicyId = CancelPolicy_72h, Available = true, CategoryId = RC_AlphaSup, Rating = 8.3f, CreatedAt = SeedNow },
-                new Room { Id = Room_A104, Name = "A-104", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_King, CancelPolicyId = CancelPolicy_7d, Available = true, CategoryId = RC_AlphaSuite, Rating = 8.9f, CreatedAt = SeedNow },
-                new Room { Id = Room_B202, Name = "B-202", Breakfast = false, NumberOfBeds = 1, BedTypeId = BedType_SuperKing, CancelPolicyId = CancelPolicy_14d, Available = true, CategoryId = RC_BetaStd, Rating = 8.7f, CreatedAt = SeedNow },
-                new Room { Id = Room_B203, Name = "B-203", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_Bunk, CancelPolicyId = CancelPolicy_NonRefund, Available = true, CategoryId = RC_BetaFam, Rating = 8.8f, CreatedAt = SeedNow },
-                new Room { Id = Room_G301, Name = "G-301", Breakfast = false, NumberOfBeds = 1, BedTypeId = BedType_SofaBed, CancelPolicyId = CancelPolicy_NoShow1Night, Available = true, CategoryId = RC_GammaStd, Rating = 8.0f, CreatedAt = SeedNow },
-                new Room { Id = Room_D401, Name = "D-401", Breakfast = true, NumberOfBeds = 1, BedTypeId = BedType_Futon, CancelPolicyId = CancelPolicy_FreeUntil18h, Available = true, CategoryId = RC_DeltaDelx, Rating = 8.6f, CreatedAt = SeedNow },
-                new Room { Id = Room_E501, Name = "E-501", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_Tatami, CancelPolicyId = CancelPolicy_SemiFlex, Available = true, CategoryId = RC_EpsilonStd, Rating = 8.2f, CreatedAt = SeedNow }
+                new Room { Id = Room_A101, Name = "A-101", Breakfast = true, NumberOfBeds = 1, BedTypeId = BedType_Queen, CancelPolicyId = CancelPolicy_Flex, Available = true, CategoryId = RC_AlphaStd, Rating = 8.5f, CreatedAt = SeedNow, Price = 850000m },
+                new Room { Id = Room_B201, Name = "B-201", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_Twin, CancelPolicyId = CancelPolicy_Flex, Available = true, CategoryId = RC_BetaDelx, Rating = 9.2f, CreatedAt = SeedNow, Price = 1250000m },
+                new Room { Id = Room_A102, Name = "A-102", Breakfast = false, NumberOfBeds = 1, BedTypeId = BedType_Single, CancelPolicyId = CancelPolicy_48h, Available = true, CategoryId = RC_AlphaStd, Rating = 8.1f, CreatedAt = SeedNow, Price = 780000m },
+                new Room { Id = Room_A103, Name = "A-103", Breakfast = true, NumberOfBeds = 1, BedTypeId = BedType_Double, CancelPolicyId = CancelPolicy_72h, Available = true, CategoryId = RC_AlphaSup, Rating = 8.3f, CreatedAt = SeedNow, Price = 990000m },
+                new Room { Id = Room_A104, Name = "A-104", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_King, CancelPolicyId = CancelPolicy_7d, Available = true, CategoryId = RC_AlphaSuite, Rating = 8.9f, CreatedAt = SeedNow, Price = 1650000m },
+                new Room { Id = Room_B202, Name = "B-202", Breakfast = false, NumberOfBeds = 1, BedTypeId = BedType_SuperKing, CancelPolicyId = CancelPolicy_14d, Available = true, CategoryId = RC_BetaStd, Rating = 8.7f, CreatedAt = SeedNow, Price = 880000m },
+                new Room { Id = Room_B203, Name = "B-203", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_Bunk, CancelPolicyId = CancelPolicy_NonRefund, Available = true, CategoryId = RC_BetaFam, Rating = 8.8f, CreatedAt = SeedNow, Price = 1120000m },
+                new Room { Id = Room_G301, Name = "G-301", Breakfast = false, NumberOfBeds = 1, BedTypeId = BedType_SofaBed, CancelPolicyId = CancelPolicy_NoShow1Night, Available = true, CategoryId = RC_GammaStd, Rating = 8.0f, CreatedAt = SeedNow, Price = 720000m },
+                new Room { Id = Room_D401, Name = "D-401", Breakfast = true, NumberOfBeds = 1, BedTypeId = BedType_Futon, CancelPolicyId = CancelPolicy_FreeUntil18h, Available = true, CategoryId = RC_DeltaDelx, Rating = 8.6f, CreatedAt = SeedNow, Price = 1320000m },
+                new Room { Id = Room_E501, Name = "E-501", Breakfast = true, NumberOfBeds = 2, BedTypeId = BedType_Tatami, CancelPolicyId = CancelPolicy_SemiFlex, Available = true, CategoryId = RC_EpsilonStd, Rating = 8.2f, CreatedAt = SeedNow, Price = 980000m }
             );
 
             // ===== Join: Chỗ ở <-> Tiện nghi =====

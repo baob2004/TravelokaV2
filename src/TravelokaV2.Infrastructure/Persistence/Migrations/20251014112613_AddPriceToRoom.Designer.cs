@@ -12,8 +12,8 @@ using TravelokaV2.Infrastructure.Persistence;
 namespace TravelokaV2.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251011113437_SeedData2")]
-    partial class SeedData2
+    [Migration("20251014112613_AddPriceToRoom")]
+    partial class AddPriceToRoom
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -199,25 +199,25 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Hotel"
+                            Type = "Khách sạn"
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Resort"
+                            Type = "Khu nghỉ dưỡng"
                         },
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Apartment"
+                            Type = "Căn hộ"
                         },
                         new
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Villa"
+                            Type = "Biệt thự"
                         },
                         new
                         {
@@ -229,7 +229,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Guesthouse"
+                            Type = "Nhà khách"
                         },
                         new
                         {
@@ -241,13 +241,13 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("88888888-8888-8888-8888-888888888888"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Motel"
+                            Type = "Nhà nghỉ"
                         },
                         new
                         {
                             Id = new Guid("99999999-9999-9999-9999-999999999999"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Capsule"
+                            Type = "Khách sạn con nhộng"
                         },
                         new
                         {
@@ -265,13 +265,13 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Campsite"
+                            Type = "Khu cắm trại"
                         },
                         new
                         {
                             Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Lodge"
+                            Type = "Nhà nghỉ Lodge"
                         },
                         new
                         {
@@ -311,7 +311,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1"),
+                            Id = new Guid("b1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"),
                             AccomId = new Guid("aaaa1111-2222-3333-4444-555566667777"),
                             FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01")
                         },
@@ -323,15 +323,51 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3"),
+                            Id = new Guid("b3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3"),
                             AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
                             FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01")
                         },
                         new
                         {
-                            Id = new Guid("d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4"),
+                            Id = new Guid("b4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4"),
                             AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
                             FacilityId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccc03")
+                        },
+                        new
+                        {
+                            Id = new Guid("b5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5"),
+                            AccomId = new Guid("cccc1111-2222-3333-4444-555566667777"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa05")
+                        },
+                        new
+                        {
+                            Id = new Guid("b6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6"),
+                            AccomId = new Guid("dddd1111-2222-3333-4444-555566667777"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa04")
+                        },
+                        new
+                        {
+                            Id = new Guid("b7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7"),
+                            AccomId = new Guid("eeee1111-2222-3333-4444-555566667777"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa09")
+                        },
+                        new
+                        {
+                            Id = new Guid("b8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8"),
+                            AccomId = new Guid("ffff1111-2222-3333-4444-555566667777"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa08")
+                        },
+                        new
+                        {
+                            Id = new Guid("b9b9b9b9-b9b9-b9b9-b9b9-b9b9b9b9b9b9"),
+                            AccomId = new Guid("1111aaaa-2222-bbbb-3333-444455556666"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa10")
+                        },
+                        new
+                        {
+                            Id = new Guid("babababa-baba-baba-baba-babababababa"),
+                            AccomId = new Guid("2222bbbb-3333-cccc-4444-555566667777"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa06")
                         });
                 });
 
@@ -374,6 +410,48 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             Id = new Guid("e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3"),
                             AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
                             ImageId = new Guid("99999999-0000-0000-0000-000000000002")
+                        },
+                        new
+                        {
+                            Id = new Guid("e4e4e4e4-e4e4-e4e4-e4e4-e4e4e4e4e4e4"),
+                            AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000004")
+                        },
+                        new
+                        {
+                            Id = new Guid("e5e5e5e5-e5e5-e5e5-e5e5-e5e5e5e5e5e5"),
+                            AccomId = new Guid("cccc1111-2222-3333-4444-555566667777"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000005")
+                        },
+                        new
+                        {
+                            Id = new Guid("e6e6e6e6-e6e6-e6e6-e6e6-e6e6e6e6e6e6"),
+                            AccomId = new Guid("dddd1111-2222-3333-4444-555566667777"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000006")
+                        },
+                        new
+                        {
+                            Id = new Guid("e7e7e7e7-e7e7-e7e7-e7e7-e7e7e7e7e7e7"),
+                            AccomId = new Guid("eeee1111-2222-3333-4444-555566667777"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000007")
+                        },
+                        new
+                        {
+                            Id = new Guid("e8e8e8e8-e8e8-e8e8-e8e8-e8e8e8e8e8e8"),
+                            AccomId = new Guid("ffff1111-2222-3333-4444-555566667777"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000008")
+                        },
+                        new
+                        {
+                            Id = new Guid("e9e9e9e9-e9e9-e9e9-e9e9-e9e9e9e9e9e9"),
+                            AccomId = new Guid("1111aaaa-2222-bbbb-3333-444455556666"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000009")
+                        },
+                        new
+                        {
+                            Id = new Guid("efefefef-efef-efef-efef-efefefefefef"),
+                            AccomId = new Guid("2222bbbb-3333-cccc-4444-555566667777"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000010")
                         });
                 });
 
@@ -466,14 +544,14 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("aaaa1111-2222-3333-4444-555566667777"),
                             AccomTypeId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Address = "01 Main St, District 1, HCMC",
+                            Address = "01 Nguyễn Huệ, Q.1, TP. Hồ Chí Minh",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "contact@alpha.example",
-                            GgMapsQuery = "Alpha+Hotel+HCMC",
+                            GgMapsQuery = "Khach+san+Alpha+TP+Ho+Chi+Minh",
                             IsDeleted = false,
                             Ll = "10.776,106.700",
-                            Location = "Ho Chi Minh City",
-                            Name = "Alpha Hotel",
+                            Location = "TP. Hồ Chí Minh",
+                            Name = "Khách sạn Alpha",
                             Phone = "+84 123 456 789",
                             Rating = 8.6f,
                             Star = 4
@@ -482,17 +560,145 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("bbbb1111-2222-3333-4444-555566667777"),
                             AccomTypeId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Address = "Beach Rd, Nha Trang",
+                            Address = "Đường ven biển, Nha Trang",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "hello@beta.example",
-                            GgMapsQuery = "Beta+Resort+Nha+Trang",
+                            GgMapsQuery = "Khu+nghi+duong+Beta+Nha+Trang",
                             IsDeleted = false,
                             Ll = "12.245,109.195",
                             Location = "Nha Trang",
-                            Name = "Beta Resort",
+                            Name = "Khu nghỉ dưỡng Beta",
                             Phone = "+84 987 654 321",
                             Rating = 9.1f,
                             Star = 5
+                        },
+                        new
+                        {
+                            Id = new Guid("cccc1111-2222-3333-4444-555566667777"),
+                            AccomTypeId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            Address = "Nguyễn Văn Linh, Đà Nẵng",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "stay@gamma.example",
+                            GgMapsQuery = "Can+ho+Gamma+Da+Nang",
+                            IsDeleted = false,
+                            Ll = "16.047,108.206",
+                            Location = "Đà Nẵng",
+                            Name = "Căn hộ Gamma",
+                            Phone = "+84 909 111 222",
+                            Rating = 8.2f,
+                            Star = 4
+                        },
+                        new
+                        {
+                            Id = new Guid("dddd1111-2222-3333-4444-555566667777"),
+                            AccomTypeId = new Guid("44444444-4444-4444-4444-444444444444"),
+                            Address = "Bãi biển An Bàng, Hội An",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "booking@delta.example",
+                            GgMapsQuery = "Biet+thu+Delta+Hoi+An",
+                            IsDeleted = false,
+                            Ll = "15.879,108.335",
+                            Location = "Hội An",
+                            Name = "Biệt thự Delta",
+                            Phone = "+84 909 333 444",
+                            Rating = 9f,
+                            Star = 5
+                        },
+                        new
+                        {
+                            Id = new Guid("eeee1111-2222-3333-4444-555566667777"),
+                            AccomTypeId = new Guid("55555555-5555-5555-5555-555555555555"),
+                            Address = "Phố Cổ, Hà Nội",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "hi@epsilon.example",
+                            GgMapsQuery = "Hostel+Epsilon+Ha+Noi",
+                            IsDeleted = false,
+                            Ll = "21.028,105.854",
+                            Location = "Hà Nội",
+                            Name = "Hostel Epsilon",
+                            Phone = "+84 909 555 666",
+                            Rating = 8f,
+                            Star = 3
+                        },
+                        new
+                        {
+                            Id = new Guid("ffff1111-2222-3333-4444-555566667777"),
+                            AccomTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
+                            Address = "Dương Đông, Phú Quốc",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "hello@zeta.example",
+                            GgMapsQuery = "Homestay+Zeta+Phu+Quoc",
+                            IsDeleted = false,
+                            Ll = "10.284,103.984",
+                            Location = "Phú Quốc",
+                            Name = "Homestay Zeta",
+                            Phone = "+84 909 777 888",
+                            Rating = 8.7f,
+                            Star = 4
+                        },
+                        new
+                        {
+                            Id = new Guid("1111aaaa-2222-bbbb-3333-444455556666"),
+                            AccomTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
+                            Address = "Q.3, TP. Hồ Chí Minh",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "stay@eta.example",
+                            GgMapsQuery = "Capsule+Eta+TP+Ho+Chi+Minh",
+                            IsDeleted = false,
+                            Ll = "10.781,106.696",
+                            Location = "TP. Hồ Chí Minh",
+                            Name = "Capsule Eta",
+                            Phone = "+84 909 000 111",
+                            Rating = 7.9f,
+                            Star = 3
+                        },
+                        new
+                        {
+                            Id = new Guid("2222bbbb-3333-cccc-4444-555566667777"),
+                            AccomTypeId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                            Address = "Thị trấn Sa Pa, Lào Cai",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "stay@theta.example",
+                            GgMapsQuery = "Lodge+Theta+Sa+Pa",
+                            IsDeleted = false,
+                            Ll = "22.335,103.843",
+                            Location = "Sa Pa",
+                            Name = "Lodge Theta",
+                            Phone = "+84 909 222 333",
+                            Rating = 8.3f,
+                            Star = 4
+                        },
+                        new
+                        {
+                            Id = new Guid("3333cccc-4444-dddd-5555-666677778888"),
+                            AccomTypeId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                            Address = "Trung tâm Đà Lạt, Lâm Đồng",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "info@iota.example",
+                            GgMapsQuery = "Ryokan+Iota+Da+Lat",
+                            IsDeleted = false,
+                            Ll = "11.940,108.458",
+                            Location = "Đà Lạt",
+                            Name = "Ryokan Iota",
+                            Phone = "+84 909 444 555",
+                            Rating = 9.2f,
+                            Star = 5
+                        },
+                        new
+                        {
+                            Id = new Guid("4444dddd-5555-eeee-6666-777788889999"),
+                            AccomTypeId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                            Address = "TP. Buôn Ma Thuột, Đắk Lắk",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "farm@kappa.example",
+                            GgMapsQuery = "Farmstay+Kappa+Dak+Lak",
+                            IsDeleted = false,
+                            Ll = "12.667,108.037",
+                            Location = "Đắk Lắk",
+                            Name = "Farmstay Kappa",
+                            Phone = "+84 909 666 777",
+                            Rating = 8.4f,
+                            Star = 4
                         });
                 });
 
@@ -523,13 +729,61 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddd04"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Queen"
+                            Type = "Giường Queen"
                         },
                         new
                         {
                             Id = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeee05"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Twin"
+                            Type = "Giường Twin"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Giường đơn"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Giường đôi"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Giường King"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Giường Super King"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Giường tầng"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Giường sofa"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Đệm futon"
+                        },
+                        new
+                        {
+                            Id = new Guid("bead0000-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Đệm tatami"
                         });
                 });
 
@@ -560,7 +814,61 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("f1f1f1f1-f1f1-f1f1-f1f1-f1f1f1f1f1f1"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Type = "Flexible (24h)"
+                            Type = "Linh hoạt (24h)"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Linh hoạt (48h)"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Linh hoạt (72h)"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Linh hoạt (7 ngày)"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Linh hoạt (14 ngày)"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Không hoàn huỷ"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Vắng mặt tính phí 1 đêm"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Miễn phí tới 18:00"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Bán linh hoạt"
+                        },
+                        new
+                        {
+                            Id = new Guid("cafe0000-0000-0000-0000-000000000009"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Siêu linh hoạt"
                         });
                 });
 
@@ -595,21 +903,70 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Icon = "wifi",
-                            Name = "Free Wi-Fi"
+                            Name = "Wi-Fi miễn phí"
                         },
                         new
                         {
                             Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Icon = "pool",
-                            Name = "Pool"
+                            Name = "Hồ bơi"
                         },
                         new
                         {
                             Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccc03"),
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Icon = "dumbbell",
-                            Name = "Gym"
+                            Name = "Phòng gym"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa04"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "spa",
+                            Name = "Spa"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa05"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "parking",
+                            Name = "Bãi đỗ xe"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa06"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "restaurant",
+                            Name = "Nhà hàng"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa07"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "glass",
+                            Name = "Bar"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa08"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "bus",
+                            Name = "Đưa đón sân bay"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa09"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "bell",
+                            Name = "Lễ tân 24/7"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa10"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Icon = "washing",
+                            Name = "Giặt là"
                         });
                 });
 
@@ -683,30 +1040,72 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = new Guid("99999999-0000-0000-0000-000000000001"),
-                            Alt = "Lobby",
+                            Alt = "Sảnh",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Url = "https://picsum.photos/id/1018/600/400"
                         },
                         new
                         {
                             Id = new Guid("99999999-0000-0000-0000-000000000002"),
-                            Alt = "Room",
+                            Alt = "Phòng ngủ",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Url = "https://picsum.photos/id/1015/600/400"
                         },
                         new
                         {
                             Id = new Guid("99999999-0000-0000-0000-000000000003"),
-                            Alt = "Standard room",
+                            Alt = "Phòng tiêu chuẩn",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Url = "https://picsum.photos/id/1025/600/400"
                         },
                         new
                         {
                             Id = new Guid("99999999-0000-0000-0000-000000000004"),
-                            Alt = "Deluxe sea view",
+                            Alt = "Deluxe hướng biển",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Url = "https://picsum.photos/id/1039/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000005"),
+                            Alt = "Phòng khách suite",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1040/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000006"),
+                            Alt = "Phòng tắm",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1041/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000007"),
+                            Alt = "Bữa sáng",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1042/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000008"),
+                            Alt = "Hồ bơi",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1043/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000009"),
+                            Alt = "Khu gym",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1044/600/400"
+                        },
+                        new
+                        {
+                            Id = new Guid("99999999-0000-0000-0000-000000000010"),
+                            Alt = "Khu spa",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Url = "https://picsum.photos/id/1045/600/400"
                         });
                 });
 
@@ -727,17 +1126,17 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = new Guid("11112222-3333-4444-5555-666677778888"),
-                            Name = "Cash"
+                            Name = "Tiền mặt"
                         },
                         new
                         {
                             Id = new Guid("22223333-4444-5555-6666-777788889999"),
-                            Name = "Credit Card (Visa/Master)"
+                            Name = "Thẻ tín dụng (Visa/Master)"
                         },
                         new
                         {
                             Id = new Guid("33334444-5555-6666-7777-88889999aaaa"),
-                            Name = "Debit Card"
+                            Name = "Thẻ ghi nợ"
                         },
                         new
                         {
@@ -752,7 +1151,27 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = new Guid("66667777-8888-9999-aaaa-bbbbccccdddd"),
-                            Name = "Bank Transfer"
+                            Name = "Chuyển khoản ngân hàng"
+                        },
+                        new
+                        {
+                            Id = new Guid("77778888-9999-aaaa-bbbb-ccccddddeeee"),
+                            Name = "Apple Pay"
+                        },
+                        new
+                        {
+                            Id = new Guid("88889999-aaaa-bbbb-cccc-ddddeeeeffff"),
+                            Name = "Google Pay"
+                        },
+                        new
+                        {
+                            Id = new Guid("9999aaaa-bbbb-cccc-dddd-eeeeffff0000"),
+                            Name = "VNPAY"
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaa9999-bbbb-cccc-dddd-eeeeffff1111"),
+                            Name = "PayPal"
                         });
                 });
 
@@ -924,6 +1343,9 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                     b.Property<int?>("NumberOfBeds")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<float?>("Rating")
                         .HasColumnType("real");
 
@@ -953,6 +1375,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "A-101",
                             NumberOfBeds = 1,
+                            Price = 850000m,
                             Rating = 8.5f
                         },
                         new
@@ -967,7 +1390,128 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             IsDeleted = false,
                             Name = "B-201",
                             NumberOfBeds = 2,
+                            Price = 1250000m,
                             Rating = 9.2f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000003"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000001"),
+                            Breakfast = false,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000001"),
+                            CategoryId = new Guid("12121212-3434-5656-7878-909090909090"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "A-102",
+                            NumberOfBeds = 1,
+                            Price = 780000m,
+                            Rating = 8.1f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000004"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000002"),
+                            Breakfast = true,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000002"),
+                            CategoryId = new Guid("32323232-5454-7676-9898-020202020202"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "A-103",
+                            NumberOfBeds = 1,
+                            Price = 990000m,
+                            Rating = 8.3f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000005"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000003"),
+                            Breakfast = true,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000003"),
+                            CategoryId = new Guid("43434343-6565-8787-0909-030303030303"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "A-104",
+                            NumberOfBeds = 2,
+                            Price = 1650000m,
+                            Rating = 8.9f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000006"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000004"),
+                            Breakfast = false,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000004"),
+                            CategoryId = new Guid("54545454-7676-9898-1010-040404040404"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "B-202",
+                            NumberOfBeds = 1,
+                            Price = 880000m,
+                            Rating = 8.7f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000007"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000005"),
+                            Breakfast = true,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000005"),
+                            CategoryId = new Guid("65656565-8787-0909-1111-050505050505"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "B-203",
+                            NumberOfBeds = 2,
+                            Price = 1120000m,
+                            Rating = 8.8f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000008"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000006"),
+                            Breakfast = false,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000006"),
+                            CategoryId = new Guid("76767676-9898-1010-1212-060606060606"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "G-301",
+                            NumberOfBeds = 1,
+                            Price = 720000m,
+                            Rating = 8f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000009"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000007"),
+                            Breakfast = true,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000007"),
+                            CategoryId = new Guid("87878787-0909-1111-1313-070707070707"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "D-401",
+                            NumberOfBeds = 1,
+                            Price = 1320000m,
+                            Rating = 8.6f
+                        },
+                        new
+                        {
+                            Id = new Guid("77777777-0000-0000-0000-000000000010"),
+                            Available = true,
+                            BedTypeId = new Guid("bead0000-0000-0000-0000-000000000008"),
+                            Breakfast = true,
+                            CancelPolicyId = new Guid("cafe0000-0000-0000-0000-000000000008"),
+                            CategoryId = new Guid("98989898-1010-1212-1414-080808080808"),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "E-501",
+                            NumberOfBeds = 2,
+                            Price = 980000m,
+                            Rating = 8.2f
                         });
                 });
 
@@ -1031,25 +1575,121 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = new Guid("12121212-3434-5656-7878-909090909090"),
-                            About = "Cozy 20m2",
+                            About = "Phòng 20m² ấm cúng",
                             AccomId = new Guid("aaaa1111-2222-3333-4444-555566667777"),
                             BasicFacilities = "[]",
                             BathAmenities = "[]",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsDeleted = false,
-                            Name = "Standard",
+                            Name = "Tiêu chuẩn",
                             RoomFacilities = "[]"
                         },
                         new
                         {
                             Id = new Guid("23232323-4545-6767-8989-010101010101"),
-                            About = "Spacious 32m2, balcony",
+                            About = "Phòng 32m², có ban công",
                             AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
                             BasicFacilities = "[]",
                             BathAmenities = "[]",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsDeleted = false,
-                            Name = "Deluxe Sea View",
+                            Name = "Deluxe Hướng Biển",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("32323232-5454-7676-9898-020202020202"),
+                            About = "22m², có cửa sổ",
+                            AccomId = new Guid("aaaa1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Superior",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("43434343-6565-8787-0909-030303030303"),
+                            About = "45m², có góc tiếp khách",
+                            AccomId = new Guid("aaaa1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Suite",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("54545454-7676-9898-1010-040404040404"),
+                            About = "24m²",
+                            AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Tiêu chuẩn",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("65656565-8787-0909-1111-050505050505"),
+                            About = "35m², 2 giường",
+                            AccomId = new Guid("bbbb1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Gia đình",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("76767676-9898-1010-1212-060606060606"),
+                            About = "28m², bếp nhỏ",
+                            AccomId = new Guid("cccc1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Studio",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("87878787-0909-1111-1313-070707070707"),
+                            About = "40m², nhìn vườn",
+                            AccomId = new Guid("dddd1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Grand Deluxe",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("98989898-1010-1212-1414-080808080808"),
+                            About = "Giường tầng, phòng chung",
+                            AccomId = new Guid("eeee1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Ký túc xá",
+                            RoomFacilities = "[]"
+                        },
+                        new
+                        {
+                            Id = new Guid("09090909-1111-1313-1515-090909090909"),
+                            About = "29m², có ban công",
+                            AccomId = new Guid("ffff1111-2222-3333-4444-555566667777"),
+                            BasicFacilities = "[]",
+                            BathAmenities = "[]",
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Premier",
                             RoomFacilities = "[]"
                         });
                 });
@@ -1087,6 +1727,54 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             Id = new Guid("f2f2f2f2-2222-2222-2222-222222222222"),
                             FacilityId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbb02"),
                             RoomCategoryId = new Guid("23232323-4545-6767-8989-010101010101")
+                        },
+                        new
+                        {
+                            Id = new Guid("f3f3f3f3-3333-3333-3333-333333333333"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa09"),
+                            RoomCategoryId = new Guid("32323232-5454-7676-9898-020202020202")
+                        },
+                        new
+                        {
+                            Id = new Guid("f4f4f4f4-4444-4444-4444-444444444444"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa04"),
+                            RoomCategoryId = new Guid("43434343-6565-8787-0909-030303030303")
+                        },
+                        new
+                        {
+                            Id = new Guid("f5f5f5f5-5555-5555-5555-555555555555"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa05"),
+                            RoomCategoryId = new Guid("54545454-7676-9898-1010-040404040404")
+                        },
+                        new
+                        {
+                            Id = new Guid("f6f6f6f6-6666-6666-6666-666666666666"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa10"),
+                            RoomCategoryId = new Guid("65656565-8787-0909-1111-050505050505")
+                        },
+                        new
+                        {
+                            Id = new Guid("f7f7f7f7-7777-7777-7777-777777777777"),
+                            FacilityId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccc03"),
+                            RoomCategoryId = new Guid("76767676-9898-1010-1212-060606060606")
+                        },
+                        new
+                        {
+                            Id = new Guid("f8f8f8f8-8888-8888-8888-888888888888"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa06"),
+                            RoomCategoryId = new Guid("87878787-0909-1111-1313-070707070707")
+                        },
+                        new
+                        {
+                            Id = new Guid("f9f9f9f9-9999-9999-9999-999999999999"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01"),
+                            RoomCategoryId = new Guid("98989898-1010-1212-1414-080808080808")
+                        },
+                        new
+                        {
+                            Id = new Guid("fafafafa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                            FacilityId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa07"),
+                            RoomCategoryId = new Guid("09090909-1111-1313-1515-090909090909")
                         });
                 });
 
@@ -1123,6 +1811,54 @@ namespace TravelokaV2.Infrastructure.Persistence.Migrations
                             Id = new Guid("a2a2a2a2-2222-2222-2222-222222222222"),
                             ImageId = new Guid("99999999-0000-0000-0000-000000000004"),
                             RoomCategoryId = new Guid("23232323-4545-6767-8989-010101010101")
+                        },
+                        new
+                        {
+                            Id = new Guid("a3a3a3a3-3333-3333-3333-333333333333"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000005"),
+                            RoomCategoryId = new Guid("32323232-5454-7676-9898-020202020202")
+                        },
+                        new
+                        {
+                            Id = new Guid("a4a4a4a4-4444-4444-4444-444444444444"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000006"),
+                            RoomCategoryId = new Guid("43434343-6565-8787-0909-030303030303")
+                        },
+                        new
+                        {
+                            Id = new Guid("a5a5a5a5-5555-5555-5555-555555555555"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000007"),
+                            RoomCategoryId = new Guid("54545454-7676-9898-1010-040404040404")
+                        },
+                        new
+                        {
+                            Id = new Guid("a6a6a6a6-6666-6666-6666-666666666666"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000008"),
+                            RoomCategoryId = new Guid("65656565-8787-0909-1111-050505050505")
+                        },
+                        new
+                        {
+                            Id = new Guid("a7a7a7a7-7777-7777-7777-777777777777"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000009"),
+                            RoomCategoryId = new Guid("76767676-9898-1010-1212-060606060606")
+                        },
+                        new
+                        {
+                            Id = new Guid("a8a8a8a8-8888-8888-8888-888888888888"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000010"),
+                            RoomCategoryId = new Guid("87878787-0909-1111-1313-070707070707")
+                        },
+                        new
+                        {
+                            Id = new Guid("a9a9a9a9-9999-9999-9999-999999999999"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000002"),
+                            RoomCategoryId = new Guid("98989898-1010-1212-1414-080808080808")
+                        },
+                        new
+                        {
+                            Id = new Guid("abababab-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                            ImageId = new Guid("99999999-0000-0000-0000-000000000001"),
+                            RoomCategoryId = new Guid("09090909-1111-1313-1515-090909090909")
                         });
                 });
 

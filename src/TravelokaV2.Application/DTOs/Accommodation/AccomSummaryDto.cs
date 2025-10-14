@@ -22,6 +22,7 @@ namespace TravelokaV2.Application.DTOs.Accommodation
         public Guid? CoverImageId { get; set; }
         public string? GgMapsQuery { get; set; }
         public string? Ll { get; set; }
+        public decimal Price { get; set; }
 
     }
 }

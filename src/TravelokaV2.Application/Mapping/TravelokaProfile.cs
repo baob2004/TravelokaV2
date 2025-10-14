@@ -23,7 +23,14 @@ namespace TravelokaV2.Application.Mapping
         public TravelokaProfile()
         {
             // ========== Accommodation ==========
-            CreateMap<Accommodation, AccomSummaryDto>();
+            CreateMap<Accommodation, AccomSummaryDto>()
+            .ForMember(d => d.Price, o => o.MapFrom(s =>
+                s.RoomCategories
+                .SelectMany(rc => rc.Rooms)
+                .OrderBy(r => r.Price)
+                .Select(r => (decimal?)r.Price)
+                .FirstOrDefault()
+            ));
             CreateMap<Accommodation, AccomDetailDto>()
             .ForMember(d => d.AccomTypeName,
                     o => o.MapFrom(s => s.AccomType != null ? s.AccomType.Type : null))

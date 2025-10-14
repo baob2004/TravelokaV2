@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using TravelokaV2.Domain.Abstractions;
 
 namespace TravelokaV2.Domain.Entities
@@ -22,5 +23,7 @@ namespace TravelokaV2.Domain.Entities
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
         public string? DeletedBy { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal? Price { get; set; }
     }
 }
