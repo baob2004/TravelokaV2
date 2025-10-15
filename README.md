@@ -49,7 +49,7 @@ AuthResponse {
 - `POST /auth/register` → Body: `RegisterRequest` → 200 `AuthResponse`
 - `POST /auth/login` → Body: `LoginRequest` → 200 `AuthResponse`
 - `POST /auth/refresh` → Body: `RefreshRequest` → 200 `AuthResponse`
-- `GET  /auth/me` *(Authorize)* → 200: thông tin user hiện tại (shape phụ thuộc backend)
+- `GET  /auth/me` *(Authorize)* → 200: thông tin user hiện tại
 
 ---
 
