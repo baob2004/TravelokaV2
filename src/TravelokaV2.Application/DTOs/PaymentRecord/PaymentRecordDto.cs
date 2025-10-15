@@ -8,6 +8,7 @@ namespace TravelokaV2.Application.DTOs.PaymentRecord
         public string? UserId { get; set; }
         public Guid? RoomId { get; set; }
         public string? RoomName { get; set; }
+        public decimal? Price { get; set; }
         public Guid? PaymentMethodId { get; set; }
         public string? PaymentMethodName { get; set; }
         public PaymentStatus? Status { get; set; }

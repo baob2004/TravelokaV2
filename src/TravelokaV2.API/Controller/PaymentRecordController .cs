@@ -1,4 +1,3 @@
-// API/Controllers/PaymentRecordsController.cs
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +47,17 @@ namespace TravelokaV2.API.Controllers
         {
             await _service.DeleteAsync(id, ct);
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<ActionResult<PaymentRecordDto>> GetByUserId(CancellationToken ct)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                       ?? User.FindFirst("sub")?.Value;
+            if (string.IsNullOrWhiteSpace(userId)) return Unauthorized();
+
+            return Ok(await _service.GetByUserIdAsync(userId, ct));
         }
     }
 }

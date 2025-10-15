@@ -90,5 +90,16 @@ namespace TravelokaV2.Application.Services
             _uow.PaymentRecords.Remove(entity);
             await _uow.SaveChangesAsync(ct);
         }
+
+        public async Task<IEnumerable<PaymentRecordDto>> GetByUserIdAsync(string userId, CancellationToken ct)
+        {
+            var entities = await _uow.PaymentRecords.Query().Where(p => p.UserId == userId).Include(p => p.Room).Include(p => p.PaymentMethod).ToListAsync(ct);
+            if (entities is null) throw new InvalidOperationException();
+
+            var dtos = entities.Select(
+                e => _mapper.Map<PaymentRecordDto>(e)
+            );
+            return dtos;
+        }
     }
 }

@@ -128,7 +128,8 @@ namespace TravelokaV2.Application.Mapping
             // ========== PaymentRecord ==========
             CreateMap<PaymentRecord, PaymentRecordDto>()
                 .ForMember(d => d.PaymentMethodName, o => o.MapFrom(s => s.PaymentMethod != null ? s.PaymentMethod.Name : null))
-                .ForMember(d => d.RoomName, o => o.MapFrom(s => s.Room != null ? s.Room.Name : null));
+                .ForMember(d => d.RoomName, o => o.MapFrom(s => s.Room != null ? s.Room.Name : null))
+                .ForMember(d => d.Price, o => o.MapFrom(s => s.Room != null ? s.Room.Price : null));
 
             CreateMap<PaymentRecordCreateDto, PaymentRecord>();
             CreateMap<PaymentRecordUpdateDto, PaymentRecord>();
