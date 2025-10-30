@@ -16,45 +16,29 @@ public sealed class ErrorHandlingMiddleware : IMiddleware
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var traceId = context.TraceIdentifier;
-
         try
         {
             await next(context);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception. TraceId={TraceId}", traceId);
+            _logger.LogError(ex, "Unhandled exception: {Message}", ex.Message);
 
-            if (context.Response.HasStarted) throw;
-
-            var (status, title) = Map(ex);
-
-            var problem = new
+            if (!context.Response.HasStarted)
             {
-                type = $"about:blank",
-                title,
-                status = (int)status,
-                message = GetUserMessage(ex),
-                traceId,
-                path = context.Request.Path.Value,
-                method = context.Request.Method,
-                // chỉ show stack ở Dev
-                detail = _env.IsDevelopment() ? ex.ToString() : null
-            };
-
-            context.Response.ContentType = "application/problem+json";
-            context.Response.StatusCode = (int)status;
-
-            var json = JsonSerializer.Serialize(problem, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = _env.IsDevelopment()
-            });
-
-            await context.Response.WriteAsync(json);
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+                context.Response.ContentType = "application/json";
+                var result = JsonSerializer.Serialize(new
+                {
+                    success = false,
+                    error = ex.Message,
+                    traceId = context.TraceIdentifier
+                });
+                await context.Response.WriteAsync(result);
+            }
         }
     }
+
 
     private static (HttpStatusCode, string) Map(Exception ex) => ex switch
     {
