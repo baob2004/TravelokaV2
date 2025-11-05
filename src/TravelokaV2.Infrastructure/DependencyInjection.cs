@@ -75,6 +75,8 @@ namespace TravelokaV2.Infrastructure
             // ==== DI Repository and UnitOfWork ====
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+            services.AddScoped<IPaymentRecordRepository, PaymentRecordRepository>();
 
             // ==== Service ====
             services.AddScoped<ITokenService, TokenService>();

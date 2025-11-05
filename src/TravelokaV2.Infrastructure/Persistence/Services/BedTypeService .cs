@@ -20,12 +20,8 @@ namespace TravelokaV2.Application.Services
 
         public async Task<IEnumerable<BedTypeDto>> GetAllAsync(CancellationToken ct)
         {
-            var list = await _uow.BedTypes.Query()
-                .AsNoTracking()
-                .OrderBy(x => x.Type)
-                .ToListAsync(ct);
-
-            return _mapper.Map<List<BedTypeDto>>(list);
+            var entities = await _uow.BedTypes.GetAllAsync(ct: ct);
+            return _mapper.Map<IEnumerable<BedTypeDto>>(entities);
         }
 
         public async Task<BedTypeDto> GetByIdAsync(Guid id, CancellationToken ct)
@@ -41,8 +37,7 @@ namespace TravelokaV2.Application.Services
             if (dto == null) throw new ArgumentNullException(nameof(dto));
             if (string.IsNullOrWhiteSpace(dto.Type)) throw new ArgumentException("Type is required.", nameof(dto.Type));
 
-            var dup = await _uow.BedTypes.Query()
-                .AnyAsync(x => x.Type == dto.Type, ct);
+            var dup = await _uow.BedTypes.AnyAsync(x => x.Type == dto.Type, ct);
             if (dup) throw new InvalidOperationException("BedType already exists.");
 
             var entity = _mapper.Map<BedType>(dto);
@@ -61,8 +56,7 @@ namespace TravelokaV2.Application.Services
             var entity = await _uow.BedTypes.GetByIdAsync(id, asNoTracking: false, ct: ct)
                 ?? throw new KeyNotFoundException("BedType not found.");
 
-            var dup = await _uow.BedTypes.Query()
-                .AnyAsync(x => x.Id != id && x.Type == dto.Type, ct);
+            var dup = await _uow.BedTypes.AnyAsync(x => x.Id != id && x.Type == dto.Type, ct);
             if (dup) throw new InvalidOperationException("Another BedType with same name exists.");
 
             _mapper.Map(dto, entity);

@@ -19,12 +19,8 @@ namespace TravelokaV2.Application.Services
 
         public async Task<IEnumerable<CancelPolicyDto>> GetAllAsync(CancellationToken ct)
         {
-            var list = await _uow.CancelPolicies.Query()
-                .AsNoTracking()
-                .OrderBy(x => x.Type)
-                .ToListAsync(ct);
-
-            return _mapper.Map<List<CancelPolicyDto>>(list);
+            var entities = await _uow.CancelPolicies.GetAllAsync(ct: ct);
+            return _mapper.Map<IEnumerable<CancelPolicyDto>>(entities);
         }
 
         public async Task<CancelPolicyDto> GetByIdAsync(Guid id, CancellationToken ct)
@@ -40,8 +36,7 @@ namespace TravelokaV2.Application.Services
             if (dto == null) throw new ArgumentNullException(nameof(dto));
             if (string.IsNullOrWhiteSpace(dto.Type)) throw new ArgumentException("Type is required.", nameof(dto.Type));
 
-            var dup = await _uow.CancelPolicies.Query()
-                .AnyAsync(x => x.Type == dto.Type, ct);
+            var dup = await _uow.CancelPolicies.AnyAsync(x => x.Type == dto.Type, ct);
             if (dup) throw new InvalidOperationException("CancelPolicy already exists.");
 
             var entity = _mapper.Map<CancelPolicy>(dto);
@@ -60,8 +55,7 @@ namespace TravelokaV2.Application.Services
             var entity = await _uow.CancelPolicies.GetByIdAsync(id, asNoTracking: false, ct: ct)
                 ?? throw new KeyNotFoundException("CancelPolicy not found.");
 
-            var dup = await _uow.CancelPolicies.Query()
-                .AnyAsync(x => x.Id != id && x.Type == dto.Type, ct);
+            var dup = await _uow.CancelPolicies.AnyAsync(x => x.Id != id && x.Type == dto.Type, ct);
             if (dup) throw new InvalidOperationException("Another CancelPolicy with same name exists.");
 
             _mapper.Map(dto, entity);

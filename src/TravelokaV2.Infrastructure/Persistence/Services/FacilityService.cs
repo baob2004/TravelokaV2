@@ -37,8 +37,7 @@ namespace TravelokaV2.Application.Services
             if (string.IsNullOrWhiteSpace(dto.Name))
                 throw new ArgumentException("Name is required.", nameof(dto.Name));
 
-            var duplicate = await _uow.Facilities.Query()
-                .AnyAsync(x => x.Name == dto.Name, ct);
+            var duplicate = await _uow.Facilities.AnyAsync(x => x.Name == dto.Name, ct);
             if (duplicate) throw new InvalidOperationException("Facility name already exists.");
 
             var entity = _mapper.Map<Facility>(dto);
@@ -58,8 +57,7 @@ namespace TravelokaV2.Application.Services
             var entity = await _uow.Facilities.GetByIdAsync(id, asNoTracking: false, ct: ct)
                         ?? throw new KeyNotFoundException("Facility not found.");
 
-            var duplicate = await _uow.Facilities.Query()
-                .AnyAsync(x => x.Id != id && x.Name == dto.Name, ct);
+            var duplicate = await _uow.Facilities.AnyAsync(x => x.Id != id && x.Name == dto.Name, ct);
             if (duplicate) throw new InvalidOperationException("Another facility with the same name exists.");
 
             _mapper.Map(dto, entity);

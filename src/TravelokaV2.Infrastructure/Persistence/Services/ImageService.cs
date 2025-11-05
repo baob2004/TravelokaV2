@@ -19,11 +19,7 @@ namespace TravelokaV2.Application.Services
 
         public async Task<IEnumerable<ImageDto>> GetAllAsync(CancellationToken ct)
         {
-            var entities = await _uow.Images.Query()
-                .AsNoTracking()
-                .OrderByDescending(x => x.CreatedAt)
-                .ToListAsync(ct);
-
+            var entities = await _uow.Images.GetAllAsync(ct: ct);
             return _mapper.Map<IEnumerable<ImageDto>>(entities);
         }
 
@@ -40,8 +36,7 @@ namespace TravelokaV2.Application.Services
             if (string.IsNullOrWhiteSpace(dto.Url))
                 throw new ArgumentException("Url is required.", nameof(dto.Url));
 
-            var duplicate = await _uow.Images.Query()
-                .AnyAsync(x => x.Url == dto.Url, ct);
+            var duplicate = await _uow.Images.AnyAsync(x => x.Url == dto.Url, ct);
             if (duplicate) throw new InvalidOperationException("Image URL already exists.");
 
             var entity = _mapper.Map<Image>(dto);
@@ -61,8 +56,7 @@ namespace TravelokaV2.Application.Services
             var entity = await _uow.Images.GetByIdAsync(id, asNoTracking: false, ct: ct)
                         ?? throw new KeyNotFoundException("Image not found.");
 
-            var duplicate = await _uow.Images.Query()
-                .AnyAsync(x => x.Id != id && x.Url == dto.Url, ct);
+            var duplicate = await _uow.Images.AnyAsync(x => x.Id != id && x.Url == dto.Url, ct);
             if (duplicate) throw new InvalidOperationException("Another image with the same URL exists.");
 
             _mapper.Map(dto, entity);

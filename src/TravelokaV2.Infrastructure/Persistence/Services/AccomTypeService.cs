@@ -36,8 +36,7 @@ namespace TravelokaV2.Application.Services
             if (string.IsNullOrWhiteSpace(dto.Type))
                 throw new ArgumentException("Type is required.", nameof(dto.Type));
 
-            var exists = await _uow.AccomTypes.Query()
-                .AnyAsync(x => x.Type == dto.Type, ct);
+            var exists = await _uow.AccomTypes.AnyAsync(x => x.Type == dto.Type, ct);
             if (exists) throw new InvalidOperationException("AccomType already exists.");
 
             var entity = _mapper.Map<AccomType>(dto);
@@ -57,8 +56,7 @@ namespace TravelokaV2.Application.Services
             var entity = await _uow.AccomTypes.GetByIdAsync(id, asNoTracking: false, ct: ct)
                         ?? throw new KeyNotFoundException("AccomType not found.");
 
-            var duplicate = await _uow.AccomTypes.Query()
-                .AnyAsync(x => x.Id != id && x.Type == dto.Type, ct);
+            var duplicate = await _uow.AccomTypes.AnyAsync(x => x.Id != id && x.Type == dto.Type, ct);
             if (duplicate) throw new InvalidOperationException("Another AccomType with the same name exists.");
 
             _mapper.Map(dto, entity);
@@ -69,7 +67,7 @@ namespace TravelokaV2.Application.Services
 
         public async Task DeleteAsync(Guid id, CancellationToken ct)
         {
-            var inUse = await _uow.Accommodations.Query().AnyAsync(a => a.AccomTypeId == id, ct);
+            var inUse = await _uow.Accommodations.AnyAsync(a => a.AccomTypeId == id, ct);
             if (inUse) throw new InvalidOperationException("AccomType is in use by accommodations.");
             var entity = await _uow.AccomTypes.GetByIdAsync(id, asNoTracking: false, ct: ct)
                          ?? throw new KeyNotFoundException("AccomType not found.");

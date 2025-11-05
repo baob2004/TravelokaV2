@@ -12,7 +12,6 @@ namespace TravelokaV2.Application.Services
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly IUserReadService _users;
-
         public ReviewsService(IUnitOfWork uow, IMapper mapper, IUserReadService users)
         {
             _uow = uow;
@@ -21,9 +20,7 @@ namespace TravelokaV2.Application.Services
         }
         public async Task<ReviewDto?> GetByIdAsync(Guid id, CancellationToken ct)
         {
-            var review = await _uow.ReviewsAndRatings.Query()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.Id == id, ct)
+            var review = await _uow.ReviewsAndRatings.GetByIdAsync(id, ct: ct)
                 ?? throw new KeyNotFoundException("Review not found.");
 
             var dto = _mapper.Map<ReviewDto>(review);
@@ -89,7 +86,7 @@ namespace TravelokaV2.Application.Services
             if (dto == null) throw new ArgumentNullException(nameof(dto));
             if (string.IsNullOrWhiteSpace(currentUserId)) throw new UnauthorizedAccessException("User not authenticated.");
 
-            var exists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
+            var exists = await _uow.Accommodations.AnyAsync(a => a.Id == accomId, ct);
             if (!exists) throw new KeyNotFoundException("Accommodation Not Found");
 
             var rr = _mapper.Map<ReviewsAndRating>(dto);

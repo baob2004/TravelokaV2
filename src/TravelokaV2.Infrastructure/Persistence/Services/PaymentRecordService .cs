@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.PaymentRecord;
@@ -10,23 +11,25 @@ namespace TravelokaV2.Application.Services
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-
-        public PaymentRecordService(IUnitOfWork uow, IMapper mapper)
+        private readonly IPaymentRecordRepository _paymentRecordRepo;
+        public PaymentRecordService(IUnitOfWork uow, IMapper mapper, IPaymentRecordRepository paymentRecordRepo)
         {
             _uow = uow;
             _mapper = mapper;
+            _paymentRecordRepo = paymentRecordRepo;
         }
 
         public async Task<IEnumerable<PaymentRecordDto>> GetAllAsync(CancellationToken ct)
         {
-            var list = await _uow.PaymentRecords.Query()
-                .AsNoTracking()
-                .Include(x => x.PaymentMethod)
-                .Include(x => x.Room)
-                .OrderByDescending(x => x.Id)
-                .ToListAsync(ct);
-
-            return _mapper.Map<List<PaymentRecordDto>>(list);
+            var entities = await _uow.PaymentRecords.GetAllAsync(
+                null,
+                null,
+                true,
+                ct,
+                x => x.Room!,
+                x => x.PaymentMethod!
+            );
+            return _mapper.Map<IEnumerable<PaymentRecordDto>>(entities);
         }
 
         public async Task<PaymentRecordDto> GetByIdAsync(Guid id, CancellationToken ct)
@@ -40,18 +43,17 @@ namespace TravelokaV2.Application.Services
             return _mapper.Map<PaymentRecordDto>(pr);
         }
 
-        // Application/Services/PaymentRecordService.cs (đoạn Create/Update)
         public async Task<Guid> CreateAsync(PaymentRecordCreateDto dto, string currentUserId, CancellationToken ct)
         {
             if (dto == null) throw new ArgumentNullException(nameof(dto));
             if (string.IsNullOrWhiteSpace(currentUserId)) throw new UnauthorizedAccessException("User not authenticated.");
 
             if (dto.RoomId.HasValue &&
-                !await _uow.Rooms.Query().AnyAsync(r => r.Id == dto.RoomId, ct))
+                !await _uow.Rooms.AnyAsync(r => r.Id == dto.RoomId, ct))
                 throw new KeyNotFoundException("Room not found.");
 
             if (dto.PaymentMethodId.HasValue &&
-                !await _uow.PaymentMethods.Query().AnyAsync(p => p.Id == dto.PaymentMethodId, ct))
+                !await _uow.PaymentMethods.AnyAsync(p => p.Id == dto.PaymentMethodId, ct))
                 throw new KeyNotFoundException("Payment method not found.");
 
             var entity = _mapper.Map<PaymentRecord>(dto);
@@ -70,11 +72,11 @@ namespace TravelokaV2.Application.Services
                          ?? throw new KeyNotFoundException("PaymentRecord not found.");
 
             if (dto.RoomId.HasValue && dto.RoomId != entity.RoomId &&
-                !await _uow.Rooms.Query().AnyAsync(r => r.Id == dto.RoomId, ct))
+                !await _uow.Rooms.AnyAsync(r => r.Id == dto.RoomId, ct))
                 throw new KeyNotFoundException("Room not found.");
 
             if (dto.PaymentMethodId.HasValue && dto.PaymentMethodId != entity.PaymentMethodId &&
-                !await _uow.PaymentMethods.Query().AnyAsync(p => p.Id == dto.PaymentMethodId, ct))
+                !await _uow.PaymentMethods.AnyAsync(p => p.Id == dto.PaymentMethodId, ct))
                 throw new KeyNotFoundException("Payment method not found.");
 
             _mapper.Map(dto, entity);
@@ -93,12 +95,10 @@ namespace TravelokaV2.Application.Services
 
         public async Task<IEnumerable<PaymentRecordDto>> GetByUserIdAsync(string userId, CancellationToken ct)
         {
-            var entities = await _uow.PaymentRecords.Query().Where(p => p.UserId == userId).Include(p => p.Room).Include(p => p.PaymentMethod).ToListAsync(ct);
+            var entities = await _paymentRecordRepo.GetByUserId(userId, ct);
             if (entities is null) throw new InvalidOperationException();
 
-            var dtos = entities.Select(
-                e => _mapper.Map<PaymentRecordDto>(e)
-            );
+            var dtos = _mapper.Map<List<PaymentRecordDto>>(entities);
             return dtos;
         }
     }
