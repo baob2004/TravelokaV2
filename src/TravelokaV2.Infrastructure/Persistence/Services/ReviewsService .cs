@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.ReviewsAndRating;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Application.Services.Identity;
 using TravelokaV2.Domain.Entities;
+using TravelokaV2.Infrastructure.Identity;
+using static TravelokaV2.Application.DTOs.ReviewsAndRating.BulkReview;
 
 namespace TravelokaV2.Application.Services
 {
@@ -12,11 +16,13 @@ namespace TravelokaV2.Application.Services
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly IUserReadService _users;
-        public ReviewsService(IUnitOfWork uow, IMapper mapper, IUserReadService users)
+        private readonly UserManager<AppUser> _userManager;
+        public ReviewsService(IUnitOfWork uow, IMapper mapper, IUserReadService users, UserManager<AppUser> userManager)
         {
             _uow = uow;
             _mapper = mapper;
             _users = users;
+            _userManager = userManager;
         }
         public async Task<ReviewDto?> GetByIdAsync(Guid id, CancellationToken ct)
         {
@@ -133,6 +139,83 @@ namespace TravelokaV2.Application.Services
 
             _uow.ReviewsAndRatings.Remove(entity);
             await _uow.SaveChangesAsync(ct);
+        }
+
+        public async Task<BulkReviewCreateResponse> BulkCreateAsync(Guid accomId, BulkReviewCreateRequest req, CancellationToken ct)
+        {
+            var resp = new BulkReviewCreateResponse { AccommodationId = accomId, Total = req.Items.Count };
+
+            foreach (var item in req.Items)
+            {
+                var errors = new List<string>();
+                string? userId = item.UserId;
+                string? resolvedUserName = null;
+
+                // 1) Resolve user
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    if (string.IsNullOrWhiteSpace(item.UserNameOrEmail))
+                    {
+                        resp.Results.Add(BulkReviewCreateItemResult.Fail(new[] { "UserId or UserNameOrEmail is required." }));
+                        resp.Failed++;
+                        continue;
+                    }
+
+                    // Tìm bằng username trước, rồi email (tuỳ theo bạn dùng UserManager hay UoW repo)
+                    var byName = await _userManager.FindByNameAsync(item.UserNameOrEmail);
+                    var byEmail = byName ?? await _userManager.FindByEmailAsync(item.UserNameOrEmail);
+                    if (byEmail is null)
+                    {
+                        resp.Results.Add(BulkReviewCreateItemResult.Fail(new[] { "User not found." }));
+                        resp.Failed++;
+                        continue;
+                    }
+                    userId = byEmail.Id;
+                    resolvedUserName = byEmail.UserName;
+                }
+
+                // 2) SkipExisting: nếu đã có review của user này cho accom (tuỳ rule)
+                if (req.SkipExisting)
+                {
+                    var exists = await _uow.AccomRRs.Query()
+                        .AnyAsync(x => x.AccomId == accomId
+                                       && x.ReviewsAndRating!.UserId == userId
+                                       && !x.ReviewsAndRating.IsDeleted, ct);
+                    if (exists)
+                    {
+                        resp.Results.Add(BulkReviewCreateItemResult.Skip("Existing review for this user/accommodation.", userId, resolvedUserName));
+                        resp.Skipped++;
+                        continue;
+                    }
+                }
+
+                // 3) Tạo ReviewCreateDto từ item
+                var dto = new ReviewCreateDto
+                {
+                    Rating = item.Rating,
+                    Review = item.Comment,
+                };
+
+                // 4) Gọi lại pipeline tạo review 1 item (tận dụng logic CreateAsync để insert ReviewsAndRating + Accom_RR)
+                try
+                {
+                    var newId = await CreateAsync(accomId, dto, userId!, resolvedUserName, ct);
+                    resp.Results.Add(BulkReviewCreateItemResult.Success(userId!, resolvedUserName, newId));
+                    resp.Succeeded++;
+                }
+                catch (ValidationException vex)
+                {
+                    resp.Results.Add(BulkReviewCreateItemResult.Fail(new[] { vex.Message }, userId, resolvedUserName));
+                    resp.Failed++;
+                }
+                catch (Exception ex)
+                {
+                    resp.Results.Add(BulkReviewCreateItemResult.Fail(new[] { ex.Message }, userId, resolvedUserName));
+                    resp.Failed++;
+                }
+            }
+
+            return resp;
         }
     }
 }

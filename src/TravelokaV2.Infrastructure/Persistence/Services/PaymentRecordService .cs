@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.PaymentRecord;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Domain.Entities;
+using TravelokaV2.Domain.Enums;
+using static TravelokaV2.Application.DTOs.ReviewsAndRating.BulkPayment;
 
 namespace TravelokaV2.Application.Services
 {
@@ -101,6 +103,62 @@ namespace TravelokaV2.Application.Services
 
             var dtos = _mapper.Map<List<PaymentRecordDto>>(entities);
             return dtos;
+        }
+
+        public async Task<BulkPaymentRecordCreateResponse> BulkCreateAsync(BulkPaymentRecordCreateRequest req, CancellationToken ct)
+        {
+            if (req is null || req.Items is null || req.Items.Count == 0)
+                throw new ArgumentException("Items is empty.", nameof(req));
+
+            var resp = new BulkPaymentRecordCreateResponse { Total = req.Items.Count };
+            var now = DateTime.UtcNow;
+
+            foreach (var item in req.Items)
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(item.UserId))
+                        throw new ArgumentException("UserId is required.");
+
+                    if (item.RoomId.HasValue)
+                    {
+                        var ok = await _uow.Rooms.AnyAsync(r => r.Id == item.RoomId, ct);
+                        if (!ok) throw new KeyNotFoundException("Room not found.");
+                    }
+
+                    if (item.PaymentMethodId.HasValue)
+                    {
+                        var ok = await _uow.PaymentMethods.AnyAsync(p => p.Id == item.PaymentMethodId, ct);
+                        if (!ok) throw new KeyNotFoundException("Payment method not found.");
+                    }
+
+                    var entity = new PaymentRecord
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = item.UserId,
+                        RoomId = item.RoomId,
+                        PaymentMethodId = item.PaymentMethodId,
+                        Status = item.Status ?? PaymentStatus.Success, // mặc định Success (tuỳ bạn)
+                        CreatedAt = item.CreatedAtUtc ?? req.DefaultCreatedAtUtc ?? now
+                    };
+
+                    await _uow.PaymentRecords.AddAsync(entity, ct);
+                    // không SaveChanges mỗi vòng để giảm round-trip
+                    resp.Results.Add(BulkPaymentRecordCreateItemResult.Success(entity.Id, entity.UserId!, entity.RoomId, entity.PaymentMethodId));
+                    resp.Succeeded++;
+                }
+                catch (Exception ex)
+                {
+                    if (!req.SkipInvalid) throw;
+                    resp.Results.Add(BulkPaymentRecordCreateItemResult.Fail(item.UserId, item.RoomId, item.PaymentMethodId, ex.Message));
+                    resp.Failed++;
+                }
+            }
+
+            if (resp.Succeeded > 0)
+                await _uow.SaveChangesAsync(ct);
+
+            return resp;
         }
     }
 }
