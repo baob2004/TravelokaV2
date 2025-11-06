@@ -17,7 +17,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
         {
         }
 
-        public async Task<Accom_Facility> GetAccom_Facility(Guid accomId, Guid facilityId)
+        public async Task<Accom_Facility> GetAccom_FacilityAsync(Guid accomId, Guid facilityId)
         {
             var link = await _context.AccomFacilities.AsQueryable()
                 .FirstOrDefaultAsync(x => x.AccomId == accomId && x.FacilityId == facilityId);
@@ -26,7 +26,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             return link;
         }
 
-        public async Task<Accom_Image> GetAccom_Image(Guid accomId, Guid imageId)
+        public async Task<Accom_Image> GetAccom_ImageAsync(Guid accomId, Guid imageId)
         {
             var link = await _context.AccomImages.AsQueryable()
                 .FirstOrDefaultAsync(x => x.AccomId == accomId && x.ImageId == imageId);
@@ -35,7 +35,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             return link;
         }
 
-        public async Task<GeneralInfo> GetGeneralInfoByAccomId(Guid accomId, CancellationToken ct)
+        public async Task<GeneralInfo> GetGeneralInfoByAccomIdAsync(Guid accomId, CancellationToken ct)
         {
             var res = await _context.GeneralInfos.AsQueryable()
               .Where(x => x.AccomId == accomId)
@@ -44,7 +44,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             return res;
         }
 
-        public async Task<PagedResult<Accommodation>> GetPaged(PagedQuery pagedQuery, AccomSearchRequest request, CancellationToken ct)
+        public async Task<PagedResult<Accommodation>> GetPagedAsync(PagedQuery pagedQuery, AccomSearchRequest request, CancellationToken ct)
         {
             var q = _context.Accommodations.AsQueryable();
 
@@ -93,13 +93,35 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             };
         }
 
-        public async Task<Policy> GetPolicyByAccomId(Guid accomId, CancellationToken ct)
+        public async Task<Policy> GetPolicyByAccomIdAsync(Guid accomId, CancellationToken ct)
         {
             var res = await _context.Policies.AsQueryable().AsNoTracking()
                .Where(x => x.AccomId == accomId)
                .FirstOrDefaultAsync(ct);
             if (res == null) throw new KeyNotFoundException();
             return res;
+        }
+
+        public async Task<Accommodation?> GetDetailsByIdAsync(Guid id, CancellationToken ct)
+        {
+            return await _context.Accommodations
+                .AsNoTracking()
+                .Where(a => a.Id == id)
+                .Include(a => a.AccomType)
+                .Include(a => a.GeneralInfo)
+                .Include(a => a.Policy)
+                .Include(a => a.Accom_Images).ThenInclude(ai => ai.Image)
+                .Include(a => a.Accom_Facilities).ThenInclude(af => af.Facility)
+                .Include(a => a.RoomCategories)
+                    .ThenInclude(rc => rc.Room_Images)
+                    .ThenInclude(ri => ri.Image)
+                .Include(a => a.RoomCategories)
+                    .ThenInclude(rc => rc.Room_Facilities)
+                    .ThenInclude(rf => rf.Facility)
+                .Include(a => a.RoomCategories)
+                    .ThenInclude(rc => rc.Rooms)
+                .Include(a => a.Accom_RRs).ThenInclude(ar => ar.ReviewsAndRating)
+                .FirstOrDefaultAsync(ct);
         }
     }
 }

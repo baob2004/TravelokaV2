@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
@@ -29,7 +28,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             AccomSearchRequest request,
             CancellationToken ct)
         {
-            var q = await _accommoRepo.GetPaged(pagedQuery, request, ct);
+            var q = await _accommoRepo.GetPagedAsync(pagedQuery, request, ct);
 
             var items = _mapper.Map<List<AccomSummaryDto>>(q.Items);
 
@@ -44,27 +43,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task<AccomDetailDto?> GetByIdAsync(Guid id, CancellationToken ct)
         {
-            var accom = await _uow.Accommodations.GetByIdAsync(
-                id,
-                asNoTracking: true,
-                ct: ct,
-                q => q.Include(a => a.AccomType)!,
-                q => q.Include(a => a.GeneralInfo)!,
-                q => q.Include(a => a.Policy)!,
-                q => q.Include(a => a.Accom_Images).ThenInclude(ai => ai.Image)!,
-                q => q.Include(a => a.Accom_Facilities).ThenInclude(af => af.Facility)!,
-                q => q.Include(a => a.RoomCategories),
-                q => q.Include(a => a.RoomCategories)
-                      .ThenInclude(rc => rc.Room_Images)
-                      .ThenInclude(ri => ri.Image)!,
-                q => q.Include(a => a.RoomCategories)
-                      .ThenInclude(rc => rc.Room_Facilities)
-                      .ThenInclude(rf => rf.Facility)!,
-                q => q.Include(a => a.RoomCategories)
-                      .ThenInclude(rc => rc.Rooms),
-                q => q.Include(a => a.Accom_RRs).ThenInclude(ar => ar.ReviewsAndRating)!
-            );
-
+            var accom = await _accommoRepo.GetDetailsByIdAsync(id, ct);
 
             if (accom == null) throw new KeyNotFoundException("Accommodation Not Found");
 
@@ -81,14 +60,14 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
             if (dto.AccomTypeId.HasValue)
             {
-                var typeExists = await _uow.AccomTypes.AnyAsync(predicate: t => t.Id == dto.AccomTypeId.Value, ct: ct);
+                var typeExists = await _accommoRepo.AnyAsync(predicate: t => t.Id == dto.AccomTypeId.Value, ct: ct);
                 if (!typeExists) throw new KeyNotFoundException("AccomType not found.");
             }
 
             var entity = _mapper.Map<Accommodation>(dto);
             entity.CreatedAt = DateTime.UtcNow;
 
-            await _uow.Accommodations.AddAsync(entity, ct);
+            await _accommoRepo.AddAsync(entity, ct);
             await _uow.SaveChangesAsync(ct);
 
             return entity.Id;
@@ -138,12 +117,12 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task UpdateAsync(Guid id, AccomUpdateDto dto, CancellationToken ct)
         {
-            var entity = await _uow.Accommodations.GetByIdAsync(id, asNoTracking: false, ct: ct)
+            var entity = await _accommoRepo.GetByIdAsync(id, asNoTracking: false, ct: ct)
                          ?? throw new KeyNotFoundException("Accommodation Not Found");
 
             if (dto.AccomTypeId.HasValue)
             {
-                var typeExists = await _uow.AccomTypes.AnyAsync(predicate: t => t.Id == dto.AccomTypeId.Value, ct: ct);
+                var typeExists = await _accommoRepo.AnyAsync(predicate: t => t.Id == dto.AccomTypeId.Value, ct: ct);
                 if (!typeExists) throw new KeyNotFoundException("AccomType not found.");
             }
 
@@ -155,10 +134,10 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task DeleteAsync(Guid id, CancellationToken ct)
         {
-            var entity = await _uow.Accommodations.GetByIdAsync(id, asNoTracking: false, ct: ct)
+            var entity = await _accommoRepo.GetByIdAsync(id, asNoTracking: false, ct: ct)
                          ?? throw new KeyNotFoundException("Accommodation Not Found");
 
-            _uow.Accommodations.Remove(entity);
+            _accommoRepo.Remove(entity);
             entity.DeletedAt = DateTime.UtcNow;
 
             await _uow.SaveChangesAsync(ct);
@@ -168,7 +147,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
         #region General Info
         public async Task<GeneralInfoDto?> GetGeneralInfoAsync(Guid accomId, CancellationToken ct)
         {
-            var generalInfo = await _accommoRepo.GetGeneralInfoByAccomId(accomId: accomId, ct: ct);
+            var generalInfo = await _accommoRepo.GetGeneralInfoByAccomIdAsync(accomId: accomId, ct: ct);
             var res = _mapper.Map<GeneralInfoDto>(generalInfo);
             return res;
         }
@@ -201,7 +180,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
         #region Policy
         public async Task<PolicyDto?> GetPolicyAsync(Guid accomId, CancellationToken ct)
         {
-            var generalInfo = await _accommoRepo.GetPolicyByAccomId(accomId: accomId, ct: ct);
+            var generalInfo = await _accommoRepo.GetPolicyByAccomIdAsync(accomId: accomId, ct: ct);
             var res = _mapper.Map<PolicyDto>(generalInfo);
             return res;
         }
@@ -234,7 +213,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
         #region Assign Image
         public async Task LinkImageAsync(Guid accomId, Guid imageId, CancellationToken ct)
         {
-            var accomExists = await _uow.Accommodations.AnyAsync(predicate: a => a.Id == accomId, ct: ct);
+            var accomExists = await _accommoRepo.AnyAsync(predicate: a => a.Id == accomId, ct: ct);
             if (!accomExists) throw new KeyNotFoundException("Accommodation Not Found");
 
             var imgExists = await _uow.Images.AnyAsync(i => i.Id == imageId, ct);
@@ -255,7 +234,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task UnlinkImageAsync(Guid accomId, Guid imageId, CancellationToken ct)
         {
-            var link = await _accommoRepo.GetAccom_Image(accomId, imageId);
+            var link = await _accommoRepo.GetAccom_ImageAsync(accomId, imageId);
 
             if (link == null) throw new KeyNotFoundException("Image link Not Found");
 
@@ -324,7 +303,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task UnlinkFacilityAsync(Guid accomId, Guid facilityId, CancellationToken ct)
         {
-            var link = await _accommoRepo.GetAccom_Facility(accomId, facilityId);
+            var link = await _accommoRepo.GetAccom_FacilityAsync(accomId, facilityId);
 
             if (link == null) throw new KeyNotFoundException("Facility link Not Found");
 

@@ -33,7 +33,7 @@ namespace TravelokaV2.Application.Services
 
         public async Task<IEnumerable<RoomCategoryDto>> GetByAccommodationAsync(Guid accomId, CancellationToken ct)
         {
-            var exists = await _uow.Accommodations.Query().AnyAsync(a => a.Id == accomId, ct);
+            var exists = await _uow.Accommodations.AnyAsync(a => a.Id == accomId, ct);
             if (!exists) throw new KeyNotFoundException("Accommodation not found.");
 
             var list = await _uow.RoomCategories.Query()
@@ -55,7 +55,7 @@ namespace TravelokaV2.Application.Services
 
             if (dto.AccomId.HasValue)
             {
-                var ok = await _uow.Accommodations.Query().AnyAsync(a => a.Id == dto.AccomId, ct);
+                var ok = await _uow.Accommodations.AnyAsync(a => a.Id == dto.AccomId, ct);
                 if (!ok) throw new KeyNotFoundException("Accommodation not found.");
             }
 
@@ -77,7 +77,7 @@ namespace TravelokaV2.Application.Services
 
             if (dto.AccomId.HasValue && dto.AccomId != entity.AccomId)
             {
-                var ok = await _uow.Accommodations.Query().AnyAsync(a => a.Id == dto.AccomId, ct);
+                var ok = await _uow.Accommodations.AnyAsync(a => a.Id == dto.AccomId, ct);
                 if (!ok) throw new KeyNotFoundException("Accommodation not found.");
             }
 
@@ -98,13 +98,13 @@ namespace TravelokaV2.Application.Services
 
         public async Task LinkFacilityAsync(Guid roomCategoryId, Guid facilityId, CancellationToken ct)
         {
-            var rcExists = await _uow.RoomCategories.Query().AnyAsync(x => x.Id == roomCategoryId, ct);
+            var rcExists = await _uow.RoomCategories.AnyAsync(x => x.Id == roomCategoryId, ct);
             if (!rcExists) throw new KeyNotFoundException("RoomCategory not found.");
 
-            var facExists = await _uow.Facilities.Query().AnyAsync(f => f.Id == facilityId, ct);
+            var facExists = await _uow.Facilities.AnyAsync(f => f.Id == facilityId, ct);
             if (!facExists) throw new KeyNotFoundException("Facility not found.");
 
-            var exists = await _uow.RoomFacilities.Query()
+            var exists = await _uow.RoomFacilities
                 .AnyAsync(x => x.RoomCategoryId == roomCategoryId && x.FacilityId == facilityId, ct);
             if (exists) return;
 
@@ -135,7 +135,7 @@ namespace TravelokaV2.Application.Services
             var ids = facilityIds.Where(x => x != Guid.Empty).Distinct().ToList();
             if (ids.Count == 0) return 0;
 
-            var rcExists = await _uow.RoomCategories.Query().AnyAsync(x => x.Id == roomCategoryId, ct);
+            var rcExists = await _uow.RoomCategories.AnyAsync(x => x.Id == roomCategoryId, ct);
             if (!rcExists) throw new KeyNotFoundException("RoomCategory not found.");
 
             var existFacIds = await _uow.Facilities.Query()
@@ -167,10 +167,10 @@ namespace TravelokaV2.Application.Services
 
         public async Task LinkImageAsync(Guid roomCategoryId, Guid imageId, CancellationToken ct)
         {
-            var rcExists = await _uow.RoomCategories.Query().AnyAsync(x => x.Id == roomCategoryId, ct);
+            var rcExists = await _uow.RoomCategories.AnyAsync(x => x.Id == roomCategoryId, ct);
             if (!rcExists) throw new KeyNotFoundException("RoomCategory not found.");
 
-            var imgExists = await _uow.Images.Query().AnyAsync(i => i.Id == imageId, ct);
+            var imgExists = await _uow.Images.AnyAsync(i => i.Id == imageId, ct);
             if (!imgExists) throw new KeyNotFoundException("Image not found.");
 
             var exists = await _uow.RoomImages.Query()

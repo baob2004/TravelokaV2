@@ -6,12 +6,13 @@ namespace TravelokaV2.Application.Interfaces
 {
     public interface IAccommodationRepository : IGenericRepository<Accommodation>
     {
-        Task<PagedResult<Accommodation>> GetPaged(PagedQuery pagedQuery,
+        Task<PagedResult<Accommodation>> GetPagedAsync(PagedQuery pagedQuery,
             AccomSearchRequest request,
             CancellationToken ct);
-        Task<GeneralInfo> GetGeneralInfoByAccomId(Guid accomId, CancellationToken ct);
-        Task<Policy> GetPolicyByAccomId(Guid accomId, CancellationToken ct);
-        Task<Accom_Image> GetAccom_Image(Guid accomId, Guid imageId);
-        Task<Accom_Facility> GetAccom_Facility(Guid accomId, Guid facilityId);
+        Task<GeneralInfo> GetGeneralInfoByAccomIdAsync(Guid accomId, CancellationToken ct);
+        Task<Policy> GetPolicyByAccomIdAsync(Guid accomId, CancellationToken ct);
+        Task<Accom_Image> GetAccom_ImageAsync(Guid accomId, Guid imageId);
+        Task<Accom_Facility> GetAccom_FacilityAsync(Guid accomId, Guid facilityId);
+        Task<Accommodation?> GetDetailsByIdAsync(Guid id, CancellationToken ct);
     }
 }
