@@ -58,6 +58,7 @@ namespace TravelokaV2.Application.Services
 
             var entity = _mapper.Map<PaymentRecord>(dto);
             entity.UserId = currentUserId;
+            entity.CreatedAt = DateTime.UtcNow;
 
             await _uow.PaymentRecords.AddAsync(entity, ct);
             await _uow.SaveChangesAsync(ct);

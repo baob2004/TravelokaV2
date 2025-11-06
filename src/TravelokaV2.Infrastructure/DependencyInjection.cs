@@ -94,6 +94,7 @@ namespace TravelokaV2.Infrastructure
             services.AddScoped<ICancelPolicyService, CancelPolicyService>();
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             services.AddScoped<IPaymentRecordService, PaymentRecordService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
             return services;
         }

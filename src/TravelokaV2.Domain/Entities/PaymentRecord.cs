@@ -11,5 +11,6 @@ namespace TravelokaV2.Domain.Entities
         public PaymentStatus? Status { get; set; }
         public Room? Room { get; set; }
         public PaymentMethod? PaymentMethod { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
