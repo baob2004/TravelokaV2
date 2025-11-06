@@ -49,6 +49,13 @@ namespace TravelokaV2.API.Controller
         public async Task<ActionResult<UserNumberDto>> GetUserNumber(CancellationToken ct)
             => Ok(await _dashboard.GetUserNumberAsync(ct));
 
+        [HttpGet("reviews/count")]
+        public async Task<ActionResult<ReviewNumberDto>> GetReviewNumber(CancellationToken ct = default)
+        {
+            var data = await _dashboard.GetReviewNumberAsync(ct);
+            return Ok(data);
+        }
+
         [HttpGet("reviews")]
         public async Task<ActionResult<IReadOnlyList<AccomReviewDto>>> GetReviews(
             [FromQuery] int? year,

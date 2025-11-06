@@ -232,6 +232,16 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             return result;
         }
 
+        public async Task<ReviewNumberDto> GetReviewNumberAsync(CancellationToken ct = default)
+        {
+            var count = await _uow.ReviewsAndRatings
+                .Query()
+                .Where(r => !r.IsDeleted)
+                .CountAsync(ct);
+
+            return new ReviewNumberDto { ReviewNumber = count };
+        }
+
         // ===================== Helpers =====================
 
         private struct TempIncomeRow
