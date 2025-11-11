@@ -17,24 +17,47 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task<IReadOnlyList<AccomIncomeDto>> GetIncomeAsync(IncomeQuery q, CancellationToken ct = default)
         {
-            // 1) Chuẩn hoá khoảng thời gian
-            // (Giả định NormalizeRange(q) vẫn chạy được ngay cả khi q.Year là null,
-            //  vì chúng ta sẽ bỏ qua kết quả 'from'/'to' nếu q.Year là null)
-            (DateOnly from, DateOnly to) = NormalizeRange(q);
-
-            // 2) Base: payment success
+            // 1) Base: payment success
             var baseQ = _uow.PaymentRecords.Query()
                 .Where(p => p.Status == PaymentStatus.Success);
 
-            // --- THAY ĐỔI THEO YÊU CẦU CỦA BẠN ---
-            // Chỉ lọc theo khoảng thời gian nếu q.Year CÓ GIÁ TRỊ.
-            // Giả định q.Year là một kiểu nullable, ví dụ: int?
-            if (q.Year.HasValue)
+            // 2) CHUẨN HOÁ & ÁP DỤNG KHOẢNG THỜI GIAN (LOGIC MỚI)
+            // Giả định IncomeQuery (q) có các thuộc tính: From, To, Year, Month (đều là nullable)
+
+            // Ưu tiên 1: Lọc theo From/To (nếu một trong hai có giá trị)
+            if (q.From.HasValue || q.To.HasValue)
             {
+                // Dùng giá trị mặc định nếu một trong hai bị thiếu
+                DateOnly from = q.From ?? DateOnly.FromDateTime(DateTime.Today.AddMonths(-6));
+                DateOnly to = q.To ?? DateOnly.FromDateTime(DateTime.Today);
+
                 baseQ = baseQ.Where(p => DateOnly.FromDateTime(p.CreatedAt) >= from &&
                                          DateOnly.FromDateTime(p.CreatedAt) <= to);
             }
-            // Nếu q.Year là null, bộ lọc .Where() về ngày tháng sẽ được bỏ qua -> lấy tất cả các năm.
+            // Ưu tiên 2: Lọc theo Năm và Tháng (nếu không có From/To)
+            else if (q.Year.HasValue && q.Month.HasValue)
+            {
+                int year = q.Year.Value;
+                int month = q.Month.Value;
+                DateOnly from = new DateOnly(year, month, 1);
+                DateOnly to = from.AddMonths(1).AddDays(-1); // Ngày cuối cùng của tháng
+
+                baseQ = baseQ.Where(p => DateOnly.FromDateTime(p.CreatedAt) >= from &&
+                                         DateOnly.FromDateTime(p.CreatedAt) <= to);
+            }
+            // Ưu tiên 3: Lọc theo Năm (nếu chỉ có Năm)
+            else if (q.Year.HasValue)
+            {
+                int year = q.Year.Value;
+                DateOnly from = new DateOnly(year, 1, 1);
+                DateOnly to = new DateOnly(year, 12, 31);
+
+                baseQ = baseQ.Where(p => DateOnly.FromDateTime(p.CreatedAt) >= from &&
+                                         DateOnly.FromDateTime(p.CreatedAt) <= to);
+            }
+            // Ưu tiên 4: Không có bộ lọc nào (From/To/Year/Month đều null)
+            // -> baseQ giữ nguyên, lấy tất cả các năm/tháng.
+
 
             // 3) JOIN: PaymentRecord -> Room -> RoomCategory (lấy AccomId & Price)
             var joined =
@@ -129,7 +152,6 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
             return result;
         }
-
         // ===================== COUNTS =====================
 
         public async Task<AccomNumberDto> GetAccomNumberAsync(CancellationToken ct = default)
@@ -148,21 +170,46 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
         public async Task<IReadOnlyList<AccomReviewDto>> GetReviewsAsync(ReviewQuery q, CancellationToken ct = default)
         {
-            // 1) Chuẩn hoá khoảng thời gian
-            (DateOnly from, DateOnly to) = NormalizeRange(q);
-
-            // 2) Base: review chưa xoá mềm
+            // 1) Base: review chưa xoá mềm
             var rrQ = _uow.ReviewsAndRatings.Query()
                 .Where(r => !r.IsDeleted);
 
-            // --- THAY ĐỔI THEO YÊU CẦU CỦA BẠN ---
-            // Chỉ lọc theo khoảng thời gian nếu q.Year CÓ GIÁ TRỊ.
-            if (q.Year.HasValue)
+            // 2) CHUẨN HOÁ & ÁP DỤNG KHOẢNG THỜI GIAN (LOGIC MỚI)
+            // Giả định ReviewQuery (q) có các thuộc tính: From, To, Year, Month (đều là nullable)
+
+            // Ưu tiên 1: Lọc theo From/To (nếu một trong hai có giá trị)
+            if (q.From.HasValue || q.To.HasValue)
             {
+                // Dùng giá trị mặc định nếu một trong hai bị thiếu
+                DateOnly from = q.From ?? DateOnly.FromDateTime(DateTime.Today.AddMonths(-6));
+                DateOnly to = q.To ?? DateOnly.FromDateTime(DateTime.Today);
+
                 rrQ = rrQ.Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
                                      DateOnly.FromDateTime(r.CreatedAt) <= to);
             }
-            // Nếu q.Year là null, bộ lọc ngày tháng sẽ được bỏ qua -> lấy tất cả các năm.
+            // Ưu tiên 2: Lọc theo Năm và Tháng (nếu không có From/To)
+            else if (q.Year.HasValue && q.Month.HasValue)
+            {
+                int year = q.Year.Value;
+                int month = q.Month.Value;
+                DateOnly from = new DateOnly(year, month, 1);
+                DateOnly to = from.AddMonths(1).AddDays(-1); // Ngày cuối cùng của tháng
+
+                rrQ = rrQ.Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
+                                     DateOnly.FromDateTime(r.CreatedAt) <= to);
+            }
+            // Ưu tiên 3: Lọc theo Năm (nếu chỉ có Năm)
+            else if (q.Year.HasValue)
+            {
+                int year = q.Year.Value;
+                DateOnly from = new DateOnly(year, 1, 1);
+                DateOnly to = new DateOnly(year, 12, 31);
+
+                rrQ = rrQ.Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
+                                     DateOnly.FromDateTime(r.CreatedAt) <= to);
+            }
+            // Ưu tiên 4: Không có bộ lọc nào (From/To/Year/Month đều null)
+            // -> rrQ giữ nguyên, lấy tất cả các năm/tháng.
 
 
             // 3) JOIN: ReviewsAndRating -> Accom_RR -> Accommodation

@@ -24,6 +24,7 @@ namespace TravelokaV2.API.Controller
         [OutputCache(Duration = 60, VaryByQueryKeys = new[] { "year", "from", "to", "granularity" })] // .NET 8
         public async Task<ActionResult<IReadOnlyList<AccomIncomeDto>>> GetIncome(
             [FromQuery] int? year,
+            [FromQuery] int? month,
             [FromQuery] DateOnly? from,
             [FromQuery] DateOnly? to,
             [FromQuery] TimeGranularity granularity = TimeGranularity.Day,
@@ -32,6 +33,7 @@ namespace TravelokaV2.API.Controller
             var query = new IncomeQuery
             {
                 Year = year,
+                Month = month,
                 From = from,
                 To = to,
                 Granularity = granularity
@@ -59,12 +61,13 @@ namespace TravelokaV2.API.Controller
         [HttpGet("reviews")]
         public async Task<ActionResult<IReadOnlyList<AccomReviewDto>>> GetReviews(
             [FromQuery] int? year,
+            [FromQuery] int? month,
             [FromQuery] DateOnly? from,
             [FromQuery] DateOnly? to,
             [FromQuery] TimeGranularity granularity = TimeGranularity.Day,
             CancellationToken ct = default)
         {
-            var q = new ReviewQuery { Year = year, From = from, To = to, Granularity = granularity };
+            var q = new ReviewQuery { Year = year, Month = month, From = from, To = to, Granularity = granularity };
             var data = await _dashboard.GetReviewsAsync(q, ct);
             return Ok(data);
         }
