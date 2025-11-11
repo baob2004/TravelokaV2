@@ -18,13 +18,23 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
         public async Task<IReadOnlyList<AccomIncomeDto>> GetIncomeAsync(IncomeQuery q, CancellationToken ct = default)
         {
             // 1) Chuẩn hoá khoảng thời gian
+            // (Giả định NormalizeRange(q) vẫn chạy được ngay cả khi q.Year là null,
+            //  vì chúng ta sẽ bỏ qua kết quả 'from'/'to' nếu q.Year là null)
             (DateOnly from, DateOnly to) = NormalizeRange(q);
 
-            // 2) Base: payment success trong khoảng (KHÔNG Include)
+            // 2) Base: payment success
             var baseQ = _uow.PaymentRecords.Query()
-                .Where(p => p.Status == PaymentStatus.Success)
-                .Where(p => DateOnly.FromDateTime(p.CreatedAt) >= from &&
-                            DateOnly.FromDateTime(p.CreatedAt) <= to);
+                .Where(p => p.Status == PaymentStatus.Success);
+
+            // --- THAY ĐỔI THEO YÊU CẦU CỦA BẠN ---
+            // Chỉ lọc theo khoảng thời gian nếu q.Year CÓ GIÁ TRỊ.
+            // Giả định q.Year là một kiểu nullable, ví dụ: int?
+            if (q.Year.HasValue)
+            {
+                baseQ = baseQ.Where(p => DateOnly.FromDateTime(p.CreatedAt) >= from &&
+                                         DateOnly.FromDateTime(p.CreatedAt) <= to);
+            }
+            // Nếu q.Year là null, bộ lọc .Where() về ngày tháng sẽ được bỏ qua -> lấy tất cả các năm.
 
             // 3) JOIN: PaymentRecord -> Room -> RoomCategory (lấy AccomId & Price)
             var joined =
@@ -35,7 +45,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                 select new
                 {
                     pr.CreatedAt,
-                    Amount = r.Price ?? 0m,      // tuỳ nghiệp vụ: có thể nhân Nights/Quantity
+                    Amount = r.Price ?? 0m,     // tuỳ nghiệp vụ: có thể nhân Nights/Quantity
                     AccomId = rc.AccomId!.Value
                 };
 
@@ -95,9 +105,9 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                                   g.Day,
                                   g.Amount
                               })
-                             .OrderBy(x => x.Name)
-                             .ThenBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day)
-                             .ToListAsync(ct);
+                                .OrderBy(x => x.Name)
+                                .ThenBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day)
+                                .ToListAsync(ct);
 
             // 6) Gộp về AccomIncomeDto
             var result = rows
@@ -111,7 +121,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                         Period = new DateOnly(x.Year, x.Month, x.Day),
                         Amount = x.Amount
                     })
-                                  .ToList(),
+                                .ToList(),
                     Total = g.Sum(x => x.Amount)
                 })
                 .OrderByDescending(x => x.Total)
@@ -141,11 +151,19 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             // 1) Chuẩn hoá khoảng thời gian
             (DateOnly from, DateOnly to) = NormalizeRange(q);
 
-            // 2) Base: review chưa xoá mềm trong khoảng thời gian
+            // 2) Base: review chưa xoá mềm
             var rrQ = _uow.ReviewsAndRatings.Query()
-                .Where(r => !r.IsDeleted)
-                .Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
-                            DateOnly.FromDateTime(r.CreatedAt) <= to);
+                .Where(r => !r.IsDeleted);
+
+            // --- THAY ĐỔI THEO YÊU CẦU CỦA BẠN ---
+            // Chỉ lọc theo khoảng thời gian nếu q.Year CÓ GIÁ TRỊ.
+            if (q.Year.HasValue)
+            {
+                rrQ = rrQ.Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
+                                     DateOnly.FromDateTime(r.CreatedAt) <= to);
+            }
+            // Nếu q.Year là null, bộ lọc ngày tháng sẽ được bỏ qua -> lấy tất cả các năm.
+
 
             // 3) JOIN: ReviewsAndRating -> Accom_RR -> Accommodation
             var joined =
@@ -223,7 +241,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                         Period = new DateOnly(x.Year, x.Month, x.Day),
                         Count = x.Count
                     })
-                                  .ToList(),
+                                .ToList(),
                     Total = g.Sum(x => x.Count)
                 })
                 .OrderByDescending(x => x.Total)
