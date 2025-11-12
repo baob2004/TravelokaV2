@@ -122,7 +122,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
             if (dto.AccomTypeId.HasValue)
             {
-                var typeExists = await _accommoRepo.AnyAsync(predicate: t => t.Id == dto.AccomTypeId.Value, ct: ct);
+                var typeExists = await _accommoRepo.AnyAsync(predicate: t => t.AccomTypeId == dto.AccomTypeId.Value, ct: ct);
                 if (!typeExists) throw new KeyNotFoundException("AccomType not found.");
             }
 
