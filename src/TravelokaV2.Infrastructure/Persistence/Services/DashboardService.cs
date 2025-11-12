@@ -174,31 +174,28 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
             var rrQ = _uow.ReviewsAndRatings.Query()
                 .Where(r => !r.IsDeleted);
 
-            // 2) CHUẨN HOÁ & ÁP DỤNG KHOẢNG THỜI GIAN (LOGIC MỚI)
-            // Giả định ReviewQuery (q) có các thuộc tính: From, To, Year, Month (đều là nullable)
-
-            // Ưu tiên 1: Lọc theo From/To (nếu một trong hai có giá trị)
+            // 2) CHUẨN HOÁ & ÁP DỤNG KHOẢNG THỜI GIAN (Logic cũ giữ nguyên)
+            // Ưu tiên 1: Lọc theo From/To
             if (q.From.HasValue || q.To.HasValue)
             {
-                // Dùng giá trị mặc định nếu một trong hai bị thiếu
                 DateOnly from = q.From ?? DateOnly.FromDateTime(DateTime.Today.AddMonths(-6));
                 DateOnly to = q.To ?? DateOnly.FromDateTime(DateTime.Today);
 
                 rrQ = rrQ.Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
                                      DateOnly.FromDateTime(r.CreatedAt) <= to);
             }
-            // Ưu tiên 2: Lọc theo Năm và Tháng (nếu không có From/To)
+            // Ưu tiên 2: Lọc theo Năm và Tháng
             else if (q.Year.HasValue && q.Month.HasValue)
             {
                 int year = q.Year.Value;
                 int month = q.Month.Value;
                 DateOnly from = new DateOnly(year, month, 1);
-                DateOnly to = from.AddMonths(1).AddDays(-1); // Ngày cuối cùng của tháng
+                DateOnly to = from.AddMonths(1).AddDays(-1);
 
                 rrQ = rrQ.Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
                                      DateOnly.FromDateTime(r.CreatedAt) <= to);
             }
-            // Ưu tiên 3: Lọc theo Năm (nếu chỉ có Năm)
+            // Ưu tiên 3: Lọc theo Năm
             else if (q.Year.HasValue)
             {
                 int year = q.Year.Value;
@@ -208,33 +205,30 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                 rrQ = rrQ.Where(r => DateOnly.FromDateTime(r.CreatedAt) >= from &&
                                      DateOnly.FromDateTime(r.CreatedAt) <= to);
             }
-            // Ưu tiên 4: Không có bộ lọc nào (From/To/Year/Month đều null)
-            // -> rrQ giữ nguyên, lấy tất cả các năm/tháng.
+            // Ưu tiên 4: Không có bộ lọc -> rrQ giữ nguyên
 
 
-            // 3) JOIN: ReviewsAndRating -> Accom_RR -> Accommodation
+            // 3) JOIN (TỐI ƯU): Chỉ join lấy AccomId
             var joined =
                 from rr in rrQ
                 join ar in _uow.AccomRRs.Query() on rr.Id equals ar.RRId
-                join acc in _uow.Accommodations.Query() on ar.AccomId equals acc.Id
                 select new
                 {
                     rr.CreatedAt,
-                    AccomId = acc.Id,
-                    AccomName = acc.Name
+                    ar.AccomId // Chỉ cần ID ở bước này
                 };
 
-            // 4) Group theo granularity
+            // 4) Group theo granularity (TỐI ƯU): Group theo AccomId, không phải AccomName
+            // (Giả sử TempReviewRow đã được định nghĩa lại mà không có AccomName)
             IQueryable<TempReviewRow> grouped;
             switch (q.Granularity)
             {
                 case TimeGranularity.Month:
                     grouped = joined
-                        .GroupBy(x => new { x.AccomId, x.AccomName, x.CreatedAt.Year, x.CreatedAt.Month })
+                        .GroupBy(x => new { x.AccomId, x.CreatedAt.Year, x.CreatedAt.Month })
                         .Select(g => new TempReviewRow
                         {
-                            AccomId = g.Key.AccomId,
-                            AccomName = g.Key.AccomName!,
+                            AccomId = g.Key.AccomId, // Group bằng ID
                             Year = g.Key.Year,
                             Month = g.Key.Month,
                             Day = 1,
@@ -244,11 +238,10 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
                 case TimeGranularity.Year:
                     grouped = joined
-                        .GroupBy(x => new { x.AccomId, x.AccomName, x.CreatedAt.Year })
+                        .GroupBy(x => new { x.AccomId, x.CreatedAt.Year })
                         .Select(g => new TempReviewRow
                         {
-                            AccomId = g.Key.AccomId,
-                            AccomName = g.Key.AccomName!,
+                            AccomId = g.Key.AccomId, // Group bằng ID
                             Year = g.Key.Year,
                             Month = 1,
                             Day = 1,
@@ -258,11 +251,10 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
 
                 default: // Day
                     grouped = joined
-                        .GroupBy(x => new { x.AccomId, x.AccomName, D = DateOnly.FromDateTime(x.CreatedAt) })
+                        .GroupBy(x => new { x.AccomId, D = DateOnly.FromDateTime(x.CreatedAt) })
                         .Select(g => new TempReviewRow
                         {
-                            AccomId = g.Key.AccomId,
-                            AccomName = g.Key.AccomName!,
+                            AccomId = g.Key.AccomId, // Group bằng ID
                             Year = g.Key.D.Year,
                             Month = g.Key.D.Month,
                             Day = g.Key.D.Day,
@@ -271,14 +263,25 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                     break;
             }
 
-            // 5) Materialize và gộp về DTO
-            var rows = await grouped
-                .OrderBy(x => x.AccomName)
+            // 5) Materialize (TỐI ƯU): Join lấy AccomName SAU KHI đã group
+            var rows = await (from g in grouped // g là TempReviewRow (chỉ có AccomId)
+                              join a in _uow.Accommodations.Query() on g.AccomId equals a.Id
+                              select new // Tạo kiểu dữ liệu mới chứa tên
+                              {
+                                  g.AccomId,
+                                  AccomName = a.Name, // Lấy tên ở đây
+                                  g.Year,
+                                  g.Month,
+                                  g.Day,
+                                  g.Count
+                              })
+                .OrderBy(x => x.AccomName) // Sắp xếp bằng tên
                 .ThenBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day)
                 .ToListAsync(ct);
 
+            // 6) Gộp về DTO (Giống như cũ)
             var result = rows
-                .GroupBy(x => new { x.AccomId, x.AccomName })
+                .GroupBy(x => new { x.AccomId, x.AccomName }) // Dùng AccomName đã join
                 .Select(g => new AccomReviewDto
                 {
                     AccomId = g.Key.AccomId,
@@ -288,7 +291,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
                         Period = new DateOnly(x.Year, x.Month, x.Day),
                         Count = x.Count
                     })
-                                .ToList(),
+                             .ToList(),
                     Total = g.Sum(x => x.Count)
                 })
                 .OrderByDescending(x => x.Total)
