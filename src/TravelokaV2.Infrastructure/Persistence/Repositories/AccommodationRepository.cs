@@ -79,6 +79,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             var page = pagedQuery.Page <= 0 ? 1 : pagedQuery.Page;
             var pageSize = pagedQuery.PageSize <= 0 ? 20 : pagedQuery.PageSize;
 
+            q = q.Include(q => q.RoomCategories).ThenInclude(r => r.Rooms);
             var items = await q
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
