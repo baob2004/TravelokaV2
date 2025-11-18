@@ -11,6 +11,10 @@ public class AuthController(IAuthService auth) : ControllerBase
     public Task<AuthResponse> Register([FromBody] RegisterRequest req, CancellationToken ct)
         => auth.RegisterAsync(req, ct);
 
+    [HttpPost("admin-register")]
+    public Task<AuthResponse> AdminRegister([FromBody] AdminRegisterDto req, CancellationToken ct)
+        => auth.AdminRegisterAsync(req, ct);
+
     [HttpPost("login")]
     public Task<AuthResponse> Login([FromBody] LoginRequest req, CancellationToken ct)
         => auth.LoginAsync(req, ct);

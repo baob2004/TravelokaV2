@@ -39,6 +39,48 @@ namespace TravelokaV2.Infrastructure.Persistence.Services.Identity
         private static DateTime RefreshExpiry(int days = 30)
             => DateTime.UtcNow.AddDays(days);
 
+        public async Task<AuthResponse> AdminRegisterAsync(AdminRegisterDto req, CancellationToken ct = default)
+        {
+            var user = new AppUser
+            {
+                UserName = req.Username,
+                Email = "admin@gmail.com",
+                Id = Guid.NewGuid().ToString(),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var result = await _userManager.CreateAsync(user, req.Password);
+            if (!result.Succeeded)
+            {
+                var error = string.Join("; ", result.Errors.Select(e => $"{e.Code}:{e.Description}"));
+                throw new InvalidOperationException(error);
+            }
+
+            const string defaultRole = "Admin";
+            await _userManager.AddToRoleAsync(user, defaultRole);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var access = _tokenService.CreateAccessToken(user.Id, user.UserName, user.Email, roles);
+
+            var raw = NewRefreshToken();
+            _db.RefreshTokens.Add(new RefreshToken
+            {
+                UserId = user.Id,
+                Token = raw,
+                ExpiresAtUtc = RefreshExpiry(30)
+            });
+            await _db.SaveChangesAsync(ct);
+
+            return new AuthResponse
+            {
+                AccessToken = access,
+                RefreshToken = raw,
+                UserId = user.Id,
+                UserName = user.UserName ?? "",
+                Email = user.Email ?? ""
+            };
+        }
+
         public async Task<(string UserId, string UserName, string Email, IEnumerable<string> Roles)?> GetCurrentAsync(ClaimsPrincipal principal, CancellationToken ct = default)
         {
             var id = _userManager.GetUserId(principal);

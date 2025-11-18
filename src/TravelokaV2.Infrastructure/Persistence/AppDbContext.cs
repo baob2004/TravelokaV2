@@ -39,7 +39,6 @@ namespace TravelokaV2.Infrastructure.Persistence
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             builder.Seed();
 
-            // ==== Role ====
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" }
