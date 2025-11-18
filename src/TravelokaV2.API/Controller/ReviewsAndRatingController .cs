@@ -17,8 +17,8 @@ namespace TravelokaV2.API.Controllers
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetByAccommodation(Guid accomId, CancellationToken ct)
             => Ok(await _service.GetByAccommodationAsync(accomId, ct));
 
+        [Authorize(Roles ="User")]
         [HttpPost("Accommodations/{accomId:guid}")]
-        [Authorize]
         public async Task<ActionResult<Guid>> Create(Guid accomId, [FromBody] ReviewCreateDto dto, CancellationToken ct)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
@@ -37,6 +37,7 @@ namespace TravelokaV2.API.Controllers
         public async Task<ActionResult<ReviewDto>> GetById(Guid id, CancellationToken ct)
             => Ok(await _service.GetByIdAsync(id, ct));
 
+        [Authorize(Roles ="User")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ReviewUpdateDto dto, CancellationToken ct)
         {
@@ -44,6 +45,7 @@ namespace TravelokaV2.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles ="User")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {

@@ -13,8 +13,8 @@ namespace TravelokaV2.API.Controllers
         private readonly IPaymentRecordService _service;
         public PaymentRecordController(IPaymentRecordService service) => _service = service;
 
-        [HttpPost]
         [Authorize]
+        [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] PaymentRecordCreateDto dto, CancellationToken ct)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
@@ -35,6 +35,7 @@ namespace TravelokaV2.API.Controllers
         public async Task<ActionResult<IEnumerable<PaymentRecordDto>>> GetAll(CancellationToken ct)
             => Ok(await _service.GetAllAsync(ct));
 
+        [Authorize(Roles ="Admin")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] PaymentRecordUpdateDto dto, CancellationToken ct)
         {
@@ -42,6 +43,7 @@ namespace TravelokaV2.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {

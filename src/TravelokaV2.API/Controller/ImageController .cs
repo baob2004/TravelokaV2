@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.Image;
 using TravelokaV2.Application.Services;
@@ -20,6 +21,7 @@ namespace TravelokaV2.API.Controllers
             => Ok(await _service.GetByIdAsync(id, ct));
 
         [HttpPost]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<Guid>> Create([FromBody] ImageCreateDto dto, CancellationToken ct)
         {
             var id = await _service.CreateAsync(dto, ct);
@@ -27,6 +29,7 @@ namespace TravelokaV2.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ImageUpdateDto dto, CancellationToken ct)
         {
             await _service.UpdateAsync(id, dto, ct);
@@ -34,6 +37,7 @@ namespace TravelokaV2.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {
             await _service.DeleteAsync(id, ct);
@@ -41,6 +45,7 @@ namespace TravelokaV2.API.Controllers
         }
 
         [HttpPost("bulk")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<ImageCreateDto> dtos, CancellationToken ct)
         {
             var ids = await _service.CreateManyAsync(dtos, ct);

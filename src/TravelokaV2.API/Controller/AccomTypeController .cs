@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.AccomType;
 using TravelokaV2.Application.Services;
@@ -19,6 +20,7 @@ namespace TravelokaV2.API.Controllers
         public async Task<ActionResult<AccomTypeDto>> GetById(Guid id, CancellationToken ct)
             => Ok(await _service.GetByIdAsync(id, ct));
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] AccomTypeCreateDto dto, CancellationToken ct)
         {
@@ -26,6 +28,7 @@ namespace TravelokaV2.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] AccomTypeUpdateDto dto, CancellationToken ct)
         {
@@ -34,6 +37,7 @@ namespace TravelokaV2.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {
             await _service.DeleteAsync(id, ct);
