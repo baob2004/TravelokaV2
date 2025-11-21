@@ -12,7 +12,7 @@ using TravelokaV2.Infrastructure.Persistence;
 namespace TravelokaV2.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251118041152_Init")]
+    [Migration("20251121190425_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -1887,10 +1887,8 @@ namespace TravelokaV2.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
+                    b.Property<string>("FullName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")

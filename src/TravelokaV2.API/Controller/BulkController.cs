@@ -86,8 +86,7 @@ namespace TravelokaV2.API.Controller
                 {
                     Email = u.Email,
                     UserName = u.UserName,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
+                    FullName = u.FullName,
                     PhoneNumber = u.PhoneNumber,
                     EmailConfirmed = req.EmailConfirmedByDefault
                 };
@@ -309,8 +308,7 @@ namespace TravelokaV2.API.Controller
 
         public string? Password { get; set; } // nếu null → generate
 
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
+        public string? FullName { get; set; }
         public string? PhoneNumber { get; set; }
 
         /// <summary>Danh sách role muốn gán (tuỳ chọn)</summary>

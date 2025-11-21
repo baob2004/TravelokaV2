@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.Auth;
@@ -93,6 +90,14 @@ namespace TravelokaV2.Infrastructure.Persistence.Services.Identity
             return (user.Id, user.UserName ?? "", user.Email ?? "", roles);
         }
 
+        public async Task<bool> IsExist(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null) 
+                return false;
+            return true;
+        }
+
         public async Task<AuthResponse> LoginAsync(LoginRequest req, CancellationToken ct = default)
         {
             var user = await _userManager.FindByNameAsync(req.UserNameOrEmail)
@@ -157,10 +162,9 @@ namespace TravelokaV2.Infrastructure.Persistence.Services.Identity
             var user = new AppUser
             {
                 Id = Guid.NewGuid().ToString(),
-                UserName = req.UserName,
+                UserName = req.Email,
                 Email = req.Email,
-                FirstName = req.FirstName,
-                LastName = req.LastName,
+                FullName = req.FullName,
                 CreatedAt = DateTime.UtcNow
             };
 

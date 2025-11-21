@@ -1,17 +1,18 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using TravelokaV2.API.Middlewares;
 using TravelokaV2.Application;
+using TravelokaV2.Application.Services.Security;
 using TravelokaV2.Infrastructure;
+using TravelokaV2.Infrastructure.Identity;
+using TravelokaV2.Infrastructure.Persistence;
+using TravelokaV2.Infrastructure.Persistence.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
-builder.Services.AddCors(o => o.AddPolicy("AllowAll", p =>
-    p.AllowAnyOrigin()
-     .AllowAnyHeader()
-     .AllowAnyMethod()));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -27,11 +28,36 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddTransient<ErrorHandlingMiddleware>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
+builder.Services.AddIdentity<AppUser, IdentityRole>(option =>
+{
+    option.Password.RequireDigit = true;
+    option.Password.RequireLowercase = true;
+    option.Password.RequireUppercase = true;
+    option.Password.RequireNonAlphanumeric = true;
+    option.Password.RequiredLength = 8;
+    option.SignIn.RequireConfirmedEmail = true;
+}).AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
@@ -42,12 +68,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowAll");
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
