@@ -4,13 +4,21 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using TravelokaV2.API.Middlewares;
 using TravelokaV2.Application;
+using TravelokaV2.Application.Services.Cache;
 using TravelokaV2.Application.Services.Security;
 using TravelokaV2.Infrastructure;
 using TravelokaV2.Infrastructure.Identity;
 using TravelokaV2.Infrastructure.Persistence;
+using TravelokaV2.Infrastructure.Persistence.Services.Cache;
 using TravelokaV2.Infrastructure.Persistence.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "Accoms_";
+});
 
 builder.Services.AddControllers();
 
@@ -28,7 +36,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddTransient<ErrorHandlingMiddleware>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();

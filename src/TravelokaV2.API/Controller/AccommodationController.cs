@@ -5,6 +5,7 @@ using TravelokaV2.Application.DTOs.Common;
 using TravelokaV2.Application.DTOs.GeneralInfo;
 using TravelokaV2.Application.DTOs.Policy;
 using TravelokaV2.Application.Services;
+using TravelokaV2.Application.Services.Cache;
 
 namespace TravelokaV2.API.Controllers
 {
@@ -13,7 +14,12 @@ namespace TravelokaV2.API.Controllers
     public class AccommodationController : ControllerBase
     {
         private readonly IAccommodationService _service;
-        public AccommodationController(IAccommodationService service) => _service = service;
+        private readonly IRedisCacheService _cache;
+        public AccommodationController(IAccommodationService service, IRedisCacheService cache)
+        {
+            _service = service;
+            _cache = cache;
+        }
 
         #region Accommodation
         [HttpGet]
@@ -22,7 +28,18 @@ namespace TravelokaV2.API.Controllers
                     [FromQuery] AccomSearchRequest request,
                     CancellationToken ct)
         {
+            string cacheKey = $"accom_{pagedQuery.Page}_{pagedQuery.PageSize}_{request.GetHashCode()}";
+
+            var cached = _cache.GetData<PagedResult<AccomSummaryDto>>(cacheKey);
+            if (cached is not null)
+            {
+                return Ok(cached);
+            }
+
             var result = await _service.GetPagedAsync(pagedQuery, request, ct);
+
+            _cache.SetData(cacheKey, result);
+
             return Ok(result);
         }
 
