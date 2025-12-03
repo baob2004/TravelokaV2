@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using TravelokaV2.API.Middlewares;
 using TravelokaV2.Application;
 using TravelokaV2.Application.Services.Cache;
@@ -16,7 +17,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    var config = new ConfigurationOptions
+    {
+        EndPoints = { builder.Configuration["Redis:EndPoint"]! },
+        Password = builder.Configuration["Redis:Password"],
+    };
+
+    options.ConfigurationOptions = config;
     options.InstanceName = "Accoms_";
 });
 
