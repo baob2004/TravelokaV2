@@ -36,8 +36,8 @@ namespace TravelokaV2.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {
             await _service.DeleteAsync(id, ct);

@@ -20,24 +20,24 @@ namespace TravelokaV2.API.Controllers
         public async Task<ActionResult<PaymentMethodDto>> GetById(Guid id, CancellationToken ct)
             => Ok(await _service.GetByIdAsync(id, ct));
 
+        [Authorize]
         [HttpPost]
-        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<Guid>> Create([FromBody] PaymentMethodCreateDto dto, CancellationToken ct)
         {
             var id = await _service.CreateAsync(dto, ct);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
+        [Authorize]
         [HttpPut("{id:guid}")]
-        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] PaymentMethodUpdateDto dto, CancellationToken ct)
         {
             await _service.UpdateAsync(id, dto, ct);
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {
             await _service.DeleteAsync(id, ct);

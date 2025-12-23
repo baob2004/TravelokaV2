@@ -22,32 +22,32 @@ namespace TravelokaV2.API.Controllers
         public async Task<ActionResult<IEnumerable<RoomSummaryDto>>> GetByCategory(Guid categoryId, CancellationToken ct)
             => Ok(await _service.GetByCategoryAsync(categoryId, ct));
 
-        [HttpPost]
         [Authorize(Roles ="Admin")]
+        [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] RoomCreateDto dto, CancellationToken ct)
         {
             var id = await _service.CreateAsync(dto, ct);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
-        [HttpPut("{id:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] RoomUpdateDto dto, CancellationToken ct)
         {
             await _service.UpdateAsync(id, dto, ct);
             return NoContent();
         }
 
-        [HttpDelete("{id:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {
             await _service.DeleteAsync(id, ct);
             return NoContent();
         }
 
-        [HttpPost("bulk")]
         [Authorize(Roles ="Admin")]
+        [HttpPost("bulk")]
         public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<RoomCreateDto> dtos, CancellationToken ct)
         {
             var ids = await _service.CreateManyAsync(dtos, ct);

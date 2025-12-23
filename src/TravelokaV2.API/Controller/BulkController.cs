@@ -42,6 +42,8 @@ namespace TravelokaV2.API.Controller
         // ========================= BULK USERS =========================
 
         /// <summary>Bulk tạo nhiều user một lúc (chỉ Admin).</summary>
+        /// 
+        [Authorize(Roles ="Admin")]
         [HttpPost("users")]
         [ProducesResponseType(typeof(BulkUserCreateResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<BulkUserCreateResponse>> BulkCreateUsers(
@@ -161,6 +163,8 @@ namespace TravelokaV2.API.Controller
         /// <summary>
         /// Bulk tạo nhiều review cho một accommodation từ danh sách user đã tồn tại.
         /// </summary>
+        /// 
+        [Authorize(Roles = "Admin")]
         [HttpPost("accommodations/reviews")]
         [ProducesResponseType(typeof(BulkReviewCreateResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<BulkReviewCreateResponse>> BulkCreateReviewsForAccommodation(
@@ -182,6 +186,7 @@ namespace TravelokaV2.API.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("users/ids")]
         [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<string>>> GetAllUserIds(CancellationToken ct)
@@ -193,6 +198,7 @@ namespace TravelokaV2.API.Controller
             return Ok(ids);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("accommodations/ids")]
         [ProducesResponseType(typeof(IEnumerable<Guid>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Guid>>> GetAllAccommodationIds(CancellationToken ct = default)
@@ -205,6 +211,7 @@ namespace TravelokaV2.API.Controller
             return Ok(ids);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("paymentmethods/ids")]
         [ProducesResponseType(typeof(IEnumerable<Guid>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Guid>>> GetAllPaymentMethodIds(CancellationToken ct = default)
@@ -217,6 +224,7 @@ namespace TravelokaV2.API.Controller
             return Ok(ids);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("paymentrecords")]
         public async Task<ActionResult<BulkPaymentRecordCreateResponse>> BulkCreatePaymentRecords(
         [FromBody] BulkPaymentRecordCreateRequest req,
@@ -228,6 +236,7 @@ namespace TravelokaV2.API.Controller
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("rooms/ids")]
         public async Task<ActionResult<IEnumerable<Guid>>> GetAllRoomIds(CancellationToken ct = default)
         {
@@ -239,6 +248,7 @@ namespace TravelokaV2.API.Controller
             return Ok(ids);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("roomcategories/ids")]
         [ProducesResponseType(typeof(IEnumerable<Guid>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Guid>>> GetAllRoomCategoryIds(CancellationToken ct = default)

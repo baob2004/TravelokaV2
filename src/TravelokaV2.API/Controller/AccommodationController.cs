@@ -50,32 +50,32 @@ namespace TravelokaV2.API.Controllers
             return Ok(dto);
         }
 
-        [HttpPost]
         [Authorize(Roles ="Admin")]
+        [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] AccomCreateDto dto, CancellationToken ct)
         {
             var id = await _service.CreateAsync(dto, ct);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
-        [HttpPost("bulk")]
         [Authorize(Roles = "Admin")]
+        [HttpPost("bulk")]
         public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<AccomCreateDto> dtos, CancellationToken ct)
         {
             var ids = await _service.CreateManyAsync(dtos, ct);
             return Ok(ids);
         }
 
-        [HttpPut("{id:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] AccomUpdateDto dto, CancellationToken ct)
         {
             await _service.UpdateAsync(id, dto, ct);
             return NoContent();
         }
 
-        [HttpDelete("{id:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {
             await _service.DeleteAsync(id, ct);
@@ -91,16 +91,16 @@ namespace TravelokaV2.API.Controllers
             return dto is null ? NotFound() : Ok(dto);
         }
 
-        [HttpPut("{accomId:guid}/general-info")]
         [Authorize(Roles ="Admin")]
+        [HttpPut("{accomId:guid}/general-info")]
         public async Task<IActionResult> UpsertGeneralInfo(Guid accomId, [FromBody] GeneralInfoUpdateDto dto, CancellationToken ct)
         {
             await _service.UpsertGeneralInfoAsync(accomId, dto, ct);
             return NoContent();
         }
 
-        [HttpDelete("{accomId:guid}/general-info")]
         [Authorize(Roles ="Admin")]
+        [HttpDelete("{accomId:guid}/general-info")]
         public async Task<IActionResult> DeleteGeneralInfo(Guid accomId, CancellationToken ct)
         {
             await _service.DeleteGeneralInfoAsync(accomId, ct);
@@ -116,16 +116,16 @@ namespace TravelokaV2.API.Controllers
             return dto is null ? NotFound() : Ok(dto);
         }
 
-        [HttpPut("{accomId:guid}/policy")]
         [Authorize(Roles ="Admin")]
+        [HttpPut("{accomId:guid}/policy")]
         public async Task<IActionResult> UpsertPolicy(Guid accomId, [FromBody] PolicyUpdateDto dto, CancellationToken ct)
         {
             await _service.UpsertPolicyAsync(accomId, dto, ct);
             return NoContent();
         }
 
-        [HttpDelete("{accomId:guid}/policy")]
         [Authorize(Roles ="Admin")]
+        [HttpDelete("{accomId:guid}/policy")]
         public async Task<IActionResult> DeletePolicy(Guid accomId, CancellationToken ct)
         {
             await _service.DeletePolicyAsync(accomId, ct);
@@ -157,25 +157,25 @@ namespace TravelokaV2.API.Controllers
 
         #endregion
 
+        [Authorize(Roles ="Admin")]
         #region Assign Facility
         [HttpPost("{accomId:guid}/facilities/{facilityId:guid}")]
-        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> LinkFacility(Guid accomId, Guid facilityId, CancellationToken ct)
         {
             await _service.LinkFacilityAsync(accomId, facilityId, ct);
-            return NoContent();
+            return Ok();
         }
 
-        [HttpDelete("{accomId:guid}/facilities/{facilityId:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpDelete("{accomId:guid}/facilities/{facilityId:guid}")]
         public async Task<IActionResult> UnlinkFacility(Guid accomId, Guid facilityId, CancellationToken ct)
         {
             await _service.UnlinkFacilityAsync(accomId, facilityId, ct);
             return NoContent();
         }
 
-        [HttpPost("{accomId:guid}/facilities/bulk")]
         [Authorize(Roles ="Admin")]
+        [HttpPost("{accomId:guid}/facilities/bulk")]
         public async Task<ActionResult<int>> LinkFacilities(Guid accomId, [FromBody] List<Guid> facilityIds, CancellationToken ct)
             => Ok(await _service.LinkFacilitiesAsync(accomId, facilityIds, ct));
         #endregion

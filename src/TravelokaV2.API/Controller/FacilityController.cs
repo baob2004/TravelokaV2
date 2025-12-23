@@ -20,32 +20,32 @@ namespace TravelokaV2.API.Controllers
         public async Task<ActionResult<FacilityDto>> GetById(Guid id, CancellationToken ct)
             => Ok(await _service.GetByIdAsync(id, ct));
 
-        [HttpPost]
         [Authorize(Roles ="Admin")]
+        [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] FacilityCreateDto dto, CancellationToken ct)
         {
             var id = await _service.CreateAsync(dto, ct);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
-        [HttpPut("{id:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] FacilityUpdateDto dto, CancellationToken ct)
         {
             await _service.UpdateAsync(id, dto, ct);
             return NoContent();
         }
 
-        [HttpDelete("{id:guid}")]
         [Authorize(Roles ="Admin")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         {
             await _service.DeleteAsync(id, ct);
             return NoContent();
         }
 
-        [HttpPost("bulk")]
         [Authorize(Roles ="Admin")]
+        [HttpPost("bulk")]
         public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<FacilityCreateDto> dtos, CancellationToken ct)
         {
             var ids = await _service.CreateManyAsync(dtos, ct);
