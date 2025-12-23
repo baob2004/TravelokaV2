@@ -1261,7 +1261,7 @@ namespace TravelokaV2.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("TravelokaV2.Domain.Entities.ReviewsAndRating", b =>

@@ -17,17 +17,20 @@ namespace TravelokaV2.Infrastructure.Persistence.Services.Identity
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IEmailSender _emailSender;
 
         public AuthService(
             AppDbContext db,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IEmailSender emailSender)
         {
             _db = db;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _emailSender = emailSender;
         }
 
         private static string NewRefreshToken()
@@ -41,9 +44,10 @@ namespace TravelokaV2.Infrastructure.Persistence.Services.Identity
             var user = new AppUser
             {
                 UserName = req.Username,
-                Email = "admin@gmail.com",
+                Email = $"{req.Username}@gmail.com",
                 Id = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                EmailConfirmed = true ,
             };
 
             var result = await _userManager.CreateAsync(user, req.Password);
@@ -56,22 +60,10 @@ namespace TravelokaV2.Infrastructure.Persistence.Services.Identity
             const string defaultRole = "Admin";
             await _userManager.AddToRoleAsync(user, defaultRole);
 
-            var roles = await _userManager.GetRolesAsync(user);
-            var access = _tokenService.CreateAccessToken(user.Id, user.UserName, user.Email, roles);
-
-            var raw = NewRefreshToken();
-            _db.RefreshTokens.Add(new RefreshToken
-            {
-                UserId = user.Id,
-                Token = raw,
-                ExpiresAtUtc = RefreshExpiry(30)
-            });
-            await _db.SaveChangesAsync(ct);
+            await _userManager.GetRolesAsync(user);
 
             return new AuthResponse
             {
-                AccessToken = access,
-                RefreshToken = raw,
                 UserId = user.Id,
                 UserName = user.UserName ?? "",
                 Email = user.Email ?? ""
