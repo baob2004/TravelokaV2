@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelokaV2.Application.DTOs.Accommodation;
+using TravelokaV2.Application.DTOs.Assignments.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
 using TravelokaV2.Application.DTOs.GeneralInfo;
 using TravelokaV2.Application.DTOs.Policy;
@@ -134,11 +135,11 @@ namespace TravelokaV2.API.Controllers
         #endregion
 
         #region Assign Image
-        [HttpPost("{accomId:guid}/images/{imageId:guid}")]
-        public async Task<IActionResult> LinkImage(Guid accomId, Guid imageId, CancellationToken ct)
+        [HttpPost("{accomId}/images")]
+        public async Task<IActionResult> LinkImage(Guid accomId, [FromBody] Guid imageId, CancellationToken ct)
         {
             await _service.LinkImageAsync(accomId, imageId, ct);
-            return NoContent();
+            return Ok("Link image successfully!");
         }
 
         [HttpDelete("{accomId:guid}/images/{imageId:guid}")]
@@ -157,13 +158,13 @@ namespace TravelokaV2.API.Controllers
 
         #endregion
 
-        [Authorize(Roles ="Admin")]
         #region Assign Facility
-        [HttpPost("{accomId:guid}/facilities/{facilityId:guid}")]
-        public async Task<IActionResult> LinkFacility(Guid accomId, Guid facilityId, CancellationToken ct)
+        [Authorize(Roles ="Admin")]
+        [HttpPost("{accomId}/facilites")]
+        public async Task<IActionResult> LinkFacility(Guid accomId,[FromBody] Guid faciltyId, CancellationToken ct)
         {
-            await _service.LinkFacilityAsync(accomId, facilityId, ct);
-            return Ok();
+            await _service.LinkFacilityAsync(accomId, faciltyId, ct);
+            return Ok("Link facility successfully!");
         }
 
         [Authorize(Roles ="Admin")]

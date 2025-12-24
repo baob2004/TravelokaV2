@@ -1,8 +1,8 @@
 namespace TravelokaV2.Application.DTOs.Assignments.Accommodation
 {
-    // POST /api/accommodations/{accomId}/facilities
     public class AccomFacilityCreateDto
     {
+        public Guid AccomId { get; set; }
         public Guid FacilityId { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace TravelokaV2.Application.Services
         Task<int> LinkImagesAsync(Guid accomId, IEnumerable<Guid> imageIds, CancellationToken ct);
 
         // ==== Assign Facility ====.
-        Task LinkFacilityAsync(Guid accomId, Guid facilityId, CancellationToken ct);
+        Task LinkFacilityAsync(Guid accomId, Guid faciltyId, CancellationToken ct);
         Task UnlinkFacilityAsync(Guid accomId, Guid facilityId, CancellationToken ct);
         Task<int> LinkFacilitiesAsync(Guid accomId, IEnumerable<Guid> facilityIds, CancellationToken ct);
     }

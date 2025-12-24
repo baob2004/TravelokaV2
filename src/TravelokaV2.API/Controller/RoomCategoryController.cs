@@ -46,11 +46,11 @@ namespace TravelokaV2.API.Controllers
 
         // ===== Facilities =====
         [Authorize(Roles ="Admin")]
-        [HttpPost("{roomCategoryId:guid}/facilities/{facilityId:guid}")]
-        public async Task<IActionResult> LinkFacility(Guid roomCategoryId, Guid facilityId, CancellationToken ct)
+        [HttpPost("{roomCategoryId:guid}/facilities")]
+        public async Task<IActionResult> LinkFacility(Guid roomCategoryId,[FromBody] Guid facilityId, CancellationToken ct)
         {
             await _service.LinkFacilityAsync(roomCategoryId, facilityId, ct);
-            return NoContent();
+            return Ok("Link facility Successfully!");
         }
 
         [Authorize(Roles ="Admin")]
@@ -68,11 +68,11 @@ namespace TravelokaV2.API.Controllers
 
         // ===== Images =====
         [Authorize(Roles ="Admin")]
-        [HttpPost("{roomCategoryId:guid}/images/{imageId:guid}")]
-        public async Task<IActionResult> LinkImage(Guid roomCategoryId, Guid imageId, CancellationToken ct)
+        [HttpPost("{roomCategoryId:guid}/images")]
+        public async Task<IActionResult> LinkImage(Guid roomCategoryId, [FromBody] Guid imageId, CancellationToken ct)
         {
             await _service.LinkImageAsync(roomCategoryId, imageId, ct);
-            return NoContent();
+            return Ok("Link facility Successfully!");
         }
 
         [Authorize(Roles ="Admin")]

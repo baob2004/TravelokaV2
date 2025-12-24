@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TravelokaV2.Application.DTOs.Accommodation;
+using TravelokaV2.Application.DTOs.Assignments.Accommodation;
 using TravelokaV2.Application.DTOs.Common;
 using TravelokaV2.Application.DTOs.GeneralInfo;
 using TravelokaV2.Application.DTOs.Policy;
@@ -280,22 +281,22 @@ namespace TravelokaV2.Infrastructure.Persistence.Services
         #endregion
 
         #region Assign Facility
-        public async Task LinkFacilityAsync(Guid accomId, Guid facilityId, CancellationToken ct)
+        public async Task LinkFacilityAsync(Guid accomId, Guid faciltyId, CancellationToken ct)
         {
-            var accomExists = await _uow.Accommodations.AnyAsync(ct: ct);
+            var accomExists = await _uow.Accommodations.AnyAsync(x => x.Id == accomId, ct);
             if (!accomExists) throw new KeyNotFoundException("Accommodation Not Found");
 
-            var facExists = await _uow.Facilities.AnyAsync(ct: ct);
+            var facExists = await _uow.Facilities.AnyAsync(x => x.Id == faciltyId, ct);
             if (!facExists) throw new KeyNotFoundException("Facility Not Found");
 
-            var exists = await _uow.AccomFacilities.AnyAsync(x => x.AccomId == accomId && x.FacilityId == facilityId, ct);
-            if (exists) return;
+            //var exists = await _uow.AccomFacilities.AnyAsync(x => x.AccomId == accomId && x.FacilityId == facilityId, ct);
+            //if (exists) return;
 
             await _uow.AccomFacilities.AddAsync(new Accom_Facility
             {
                 Id = Guid.NewGuid(),
                 AccomId = accomId,
-                FacilityId = facilityId
+                FacilityId = faciltyId
             }, ct);
 
             await _uow.SaveChangesAsync(ct);
