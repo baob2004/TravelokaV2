@@ -159,8 +159,8 @@ namespace TravelokaV2.API.Controllers
         #endregion
 
         #region Assign Facility
-        [Authorize(Roles ="Admin")]
-        [HttpPost("{accomId}/facilites")]
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{accomId:guid}/facilites")]
         public async Task<IActionResult> LinkFacility(Guid accomId,[FromBody] Guid faciltyId, CancellationToken ct)
         {
             await _service.LinkFacilityAsync(accomId, faciltyId, ct);

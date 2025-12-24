@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
+using System.IdentityModel.Tokens.Jwt;
 using TravelokaV2.API.Middlewares;
 using TravelokaV2.Application;
 using TravelokaV2.Application.Services.Cache;
@@ -14,6 +17,7 @@ using TravelokaV2.Infrastructure.Persistence.Services.Cache;
 using TravelokaV2.Infrastructure.Persistence.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -51,17 +55,6 @@ builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
-builder.Services.AddIdentity<AppUser, IdentityRole>(option =>
-{
-    option.Password.RequireDigit = true;
-    option.Password.RequireLowercase = true;
-    option.Password.RequireUppercase = true;
-    option.Password.RequireNonAlphanumeric = true;
-    option.Password.RequiredLength = 8;
-    option.SignIn.RequireConfirmedEmail = true;
-}).AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
 builder.Services.AddCors(option =>
 {
     option.AddPolicy("AllowAll", policy =>
@@ -71,7 +64,6 @@ builder.Services.AddCors(option =>
         .AllowAnyMethod();
     });
 });
-
 
 var app = builder.Build();
 
@@ -85,7 +77,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

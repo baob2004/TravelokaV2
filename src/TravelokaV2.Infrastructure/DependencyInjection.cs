@@ -1,11 +1,12 @@
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 using TravelBooking.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Application.Services;
@@ -56,6 +57,7 @@ namespace TravelokaV2.Infrastructure
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(opt =>
             {
@@ -68,8 +70,12 @@ namespace TravelokaV2.Infrastructure
                     ValidateLifetime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cfg["JWT:Key"]!)),
                     ValidateIssuerSigningKey = true,
-                    RoleClaimType = ClaimTypes.Role
+                    RoleClaimType = ClaimTypes.Role,
+
+                    
                 };
+
+                opt.MapInboundClaims = false;
             });
 
             // ==== DI Repository and UnitOfWork ====

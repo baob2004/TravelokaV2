@@ -60,7 +60,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Services.Identity
             const string defaultRole = "Admin";
             await _userManager.AddToRoleAsync(user, defaultRole);
 
-            await _userManager.GetRolesAsync(user);
+            await _db.SaveChangesAsync(ct);
 
             return new AuthResponse
             {
