@@ -13,7 +13,7 @@ namespace TravelokaV2.API.Controllers
         private readonly IPaymentRecordService _service;
         public PaymentRecordController(IPaymentRecordService service) => _service = service;
 
-        [Authorize]
+        [Authorize(Roles ="User")]
         [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] PaymentRecordCreateDto dto, CancellationToken ct)
         {
@@ -27,10 +27,12 @@ namespace TravelokaV2.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
+        [Authorize(Roles ="User")]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<PaymentRecordDto>> GetById(Guid id, CancellationToken ct)
             => Ok(await _service.GetByIdAsync(id, ct));
 
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PaymentRecordDto>>> GetAll(CancellationToken ct)
             => Ok(await _service.GetAllAsync(ct));

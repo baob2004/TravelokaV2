@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.Options;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Any;
+﻿using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,8 +7,6 @@ using TravelokaV2.Application;
 using TravelokaV2.Application.Services.Cache;
 using TravelokaV2.Application.Services.Security;
 using TravelokaV2.Infrastructure;
-using TravelokaV2.Infrastructure.Identity;
-using TravelokaV2.Infrastructure.Persistence;
 using TravelokaV2.Infrastructure.Persistence.Services.Cache;
 using TravelokaV2.Infrastructure.Persistence.Services.Security;
 
@@ -80,6 +74,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

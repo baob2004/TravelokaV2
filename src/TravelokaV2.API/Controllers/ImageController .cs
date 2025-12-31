@@ -1,0 +1,83 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TravelokaV2.Application.DTOs.Image;
+using TravelokaV2.Application.IServices.UploadFile;
+using TravelokaV2.Application.Services;
+
+namespace TravelokaV2.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ImageController : ControllerBase
+    {
+        private readonly IImageService _service;
+        private readonly IUploadImage _uploadImage;
+        public ImageController(IImageService service, IUploadImage uploadImage)
+        {
+            _service = service;
+            _uploadImage = uploadImage;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ImageDto>>> GetAll(CancellationToken ct)
+            => Ok(await _service.GetAllAsync(ct));
+
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<ImageDto>> GetById(Guid id, CancellationToken ct)
+            => Ok(await _service.GetByIdAsync(id, ct));
+
+        //[Authorize(Roles ="Admin")]
+        //[HttpPost]
+        //public async Task<ActionResult<Guid>> Create([FromBody] ImageCreateDto dto, CancellationToken ct)
+        //{
+        //    var id = await _service.CreateAsync(dto, ct);
+        //    return CreatedAtAction(nameof(GetById), new { id }, id);
+        //}
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Create(IFormFile file, [FromForm] ImageCreateDto imageDto, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                // Construct base URL in the controller
+                var baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+                var imageDtoResult = await _uploadImage.CreateProductImagesAsync(file, imageDto, baseUrl, ct);
+
+                return CreatedAtAction(nameof(GetById), new { id = imageDtoResult.Id }, imageDtoResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] ImageUpdateDto dto, CancellationToken ct)
+        {
+            await _service.UpdateAsync(id, dto, ct);
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+        {
+            await _service.DeleteAsync(id, ct);
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("bulk")]
+        public async Task<ActionResult<IReadOnlyList<Guid>>> CreateMany([FromBody] List<ImageCreateDto> dtos, CancellationToken ct)
+        {
+            var ids = await _service.CreateManyAsync(dtos, ct);
+            return Ok(ids);
+        }
+    }
+}

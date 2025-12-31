@@ -1,11 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using TravelokaV2.Application.DTOs.ReviewsAndRating; // nếu bạn đã đặt BulkReview* DTO ở Application
-using TravelokaV2.Application.DTOs.RoomCategory;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Application.Services;              // IReviewsService
 using TravelokaV2.Infrastructure.Identity;
@@ -43,7 +41,7 @@ namespace TravelokaV2.API.Controller
 
         /// <summary>Bulk tạo nhiều user một lúc (chỉ Admin).</summary>
         /// 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("users")]
         [ProducesResponseType(typeof(BulkUserCreateResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<BulkUserCreateResponse>> BulkCreateUsers(
@@ -88,7 +86,7 @@ namespace TravelokaV2.API.Controller
                 {
                     Email = u.Email,
                     UserName = u.UserName,
-                    FullName = u.FullName,
+                    FullName = u.FullName!,
                     PhoneNumber = u.PhoneNumber,
                     EmailConfirmed = req.EmailConfirmedByDefault
                 };

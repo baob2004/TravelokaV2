@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using TravelBooking.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Application.Interfaces;
+using TravelokaV2.Application.IServices.UploadFile;
 using TravelokaV2.Application.Services;
 using TravelokaV2.Application.Services.Identity;
 using TravelokaV2.Application.Services.Security;
@@ -18,6 +18,7 @@ using TravelokaV2.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Infrastructure.Persistence.Services;
 using TravelokaV2.Infrastructure.Persistence.Services.Identity;
 using TravelokaV2.Infrastructure.Persistence.Services.Security;
+using TravelokaV2.Infrastructure.Persistence.Services.UploadFile;
 
 namespace TravelokaV2.Infrastructure
 {
@@ -41,6 +42,9 @@ namespace TravelokaV2.Infrastructure
                 opt.Password.RequireUppercase = true;
                 opt.Password.RequireNonAlphanumeric = true;
                 opt.Password.RequiredLength = 8;
+                opt.SignIn.RequireConfirmedEmail = true;
+                opt.Lockout.MaxFailedAccessAttempts = 5;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>()
@@ -72,7 +76,7 @@ namespace TravelokaV2.Infrastructure
                     ValidateIssuerSigningKey = true,
                     RoleClaimType = ClaimTypes.Role,
 
-                    
+
                 };
 
                 opt.MapInboundClaims = false;
@@ -101,6 +105,7 @@ namespace TravelokaV2.Infrastructure
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             services.AddScoped<IPaymentRecordService, PaymentRecordService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IUploadImage, UploadImage>();
 
             return services;
         }

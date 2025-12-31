@@ -10,5 +10,6 @@ namespace TravelokaV2.Application.Services
         Task UpdateAsync(Guid id, ImageUpdateDto dto, CancellationToken ct);
         Task DeleteAsync(Guid id, CancellationToken ct);
         Task<IReadOnlyList<Guid>> CreateManyAsync(IEnumerable<ImageCreateDto> dtos, CancellationToken ct);
+
     }
 }
