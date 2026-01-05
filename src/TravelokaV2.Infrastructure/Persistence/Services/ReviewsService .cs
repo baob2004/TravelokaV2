@@ -90,10 +90,22 @@ namespace TravelokaV2.Application.Services
         public async Task<Guid> CreateAsync(Guid accomId, ReviewCreateDto dto, string currentUserId, string? currentUserName, CancellationToken ct)
         {
             if (dto == null) throw new ArgumentNullException(nameof(dto));
-            if (string.IsNullOrWhiteSpace(currentUserId)) throw new UnauthorizedAccessException("User not authenticated.");
+            if (string.IsNullOrWhiteSpace(currentUserId))
+                throw new UnauthorizedAccessException("User not authenticated.");
 
             var exists = await _uow.Accommodations.AnyAsync(a => a.Id == accomId, ct);
             if (!exists) throw new KeyNotFoundException("Accommodation Not Found");
+
+            var alreadyReviewed = await _uow.AccomRRs.Query()
+                .AsNoTracking()
+                .AnyAsync(x =>
+                    x.AccomId == accomId
+                    && x.ReviewsAndRating != null
+                    && x.ReviewsAndRating.UserId == currentUserId
+                    && !x.ReviewsAndRating.IsDeleted, ct);
+
+            if (alreadyReviewed)
+                throw new ValidationException("Bạn đã đánh giá khách sạn này rồi. Vui lòng chỉnh sửa đánh giá thay vì tạo mới.");
 
             var rr = _mapper.Map<ReviewsAndRating>(dto);
             rr.CreatedAt = DateTime.UtcNow;

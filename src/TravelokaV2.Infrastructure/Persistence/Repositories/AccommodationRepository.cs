@@ -46,7 +46,7 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
 
         public async Task<PagedResult<Accommodation>> GetPagedAsync(PagedQuery pagedQuery, AccomSearchRequest request, CancellationToken ct)
         {
-            var q = _context.Accommodations.AsQueryable();
+            var q = _context.Accommodations.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(request.Q))
                 q = q.Where(a =>
@@ -79,7 +79,11 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             var page = pagedQuery.Page <= 0 ? 1 : pagedQuery.Page;
             var pageSize = pagedQuery.PageSize <= 0 ? 20 : pagedQuery.PageSize;
 
-            q = q.Include(q => q.RoomCategories).ThenInclude(r => r.Rooms);
+            q = q
+            .AsSplitQuery()
+            .Include(a => a.RoomCategories).ThenInclude(rc => rc.Rooms)
+            .Include(a => a.Accom_Images).ThenInclude(ai => ai.Image);
+
             var items = await q
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)

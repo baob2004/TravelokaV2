@@ -10,6 +10,7 @@ namespace TravelokaV2.Application.DTOs.ReviewsAndRating
         public string? CreatedBy { get; set; }
         public string? UserId { get; set; }
         public string? UserName { get; set; }
+        public string? FullName { get; set; }
         public Guid? AccomId { get; set; }
     }
 }

@@ -30,5 +30,23 @@ namespace TravelokaV2.API.Controller
 
             return Ok(user);
         }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UserUpdateDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound("User không tồn tại");
+
+            user.FullName = dto.FullName ?? string.Empty;
+            user.BirthDate = dto.BirthDate;
+            user.Sex = dto.Sex;
+
+            var rs = await _userManager.UpdateAsync(user);
+            if (!rs.Succeeded) return BadRequest(rs.Errors);
+
+            return Ok(new { Message = "Cập nhật thành công" });
+        }
+
     }
 }

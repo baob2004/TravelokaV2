@@ -24,12 +24,19 @@ namespace TravelokaV2.Application.Mapping
         {
             // ========== Accommodation ==========
             CreateMap<Accommodation, AccomSummaryDto>()
-            .ForMember(d => d.Price, o => o.MapFrom(s =>
-                s.RoomCategories
-                    .SelectMany(rc => rc.Rooms)
-                    .Select(r => (decimal?)r.Price)
-                    .Min()
-            ));
+                .ForMember(d => d.Price, o => o.MapFrom(s =>
+                    s.RoomCategories
+                        .SelectMany(rc => rc.Rooms)
+                        .Select(r => (decimal?)r.Price)
+                        .Min() ?? 0m
+                ))
+                .ForMember(d => d.CoverImageId, o => o.MapFrom(s =>
+                    s.Accom_Images
+                        .OrderBy(ai => ai.Id)
+                        .Select(ai => (Guid?)ai.ImageId)
+                        .FirstOrDefault()
+                ));
+
             CreateMap<Accommodation, AccomDetailDto>()
             .ForMember(d => d.AccomTypeName,
                     o => o.MapFrom(s => s.AccomType != null ? s.AccomType.Type : null))
