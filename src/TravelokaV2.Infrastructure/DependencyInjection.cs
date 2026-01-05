@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,12 +11,14 @@ using TravelBooking.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Application.Interfaces;
 using TravelokaV2.Application.IServices.UploadFile;
 using TravelokaV2.Application.Services;
+using TravelokaV2.Application.Services.Cache;
 using TravelokaV2.Application.Services.Identity;
 using TravelokaV2.Application.Services.Security;
 using TravelokaV2.Infrastructure.Identity;
 using TravelokaV2.Infrastructure.Persistence;
 using TravelokaV2.Infrastructure.Persistence.Repositories;
 using TravelokaV2.Infrastructure.Persistence.Services;
+using TravelokaV2.Infrastructure.Persistence.Services.Cache;
 using TravelokaV2.Infrastructure.Persistence.Services.Identity;
 using TravelokaV2.Infrastructure.Persistence.Services.Security;
 using TravelokaV2.Infrastructure.Persistence.Services.UploadFile;
@@ -28,7 +31,7 @@ namespace TravelokaV2.Infrastructure
         {
             // ==== DbContext ====
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(cfg.GetConnectionString("DefaultConnection"))
+                options.UseSqlServer(cfg.GetConnectionString("TravelAppDB"))
             );
 
             // ==== JWT Options ====
@@ -92,6 +95,8 @@ namespace TravelokaV2.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserReadService, UserReadService>();
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IRedisCacheService, RedisCacheService>();
 
             services.AddScoped<IAccommodationService, AccommodationService>();
             services.AddScoped<IAccomTypeService, AccomTypeService>();
@@ -108,6 +113,15 @@ namespace TravelokaV2.Infrastructure
             services.AddScoped<IUploadImage, UploadImage>();
 
             return services;
+        }
+
+        public static void ApplyMigrations(this IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // Tự động kiểm tra và tạo bảng nếu chưa có
+            context.Database.Migrate();
         }
     }
 }

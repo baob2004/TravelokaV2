@@ -1,18 +1,18 @@
-﻿using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
 using TravelokaV2.API.Middlewares;
 using TravelokaV2.Application;
-using TravelokaV2.Application.Services.Cache;
-using TravelokaV2.Application.Services.Security;
 using TravelokaV2.Infrastructure;
-using TravelokaV2.Infrastructure.Persistence.Services.Cache;
-using TravelokaV2.Infrastructure.Persistence.Services.Security;
+using VNPAY.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
+#region Redis Service Config
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     var config = new ConfigurationOptions
@@ -24,31 +24,26 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.ConfigurationOptions = config;
     options.InstanceName = "Accoms_";
 });
+#endregion
 
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+#region Swagger Service Config
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TravelokaV2 API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme { Name = "Authorization", Type = SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT", In = ParameterLocation.Header });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-        { new OpenApiSecurityScheme { Reference = new OpenApiReference{ Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() }
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
     });
-
-    c.MapType<TimeOnly>(() => new OpenApiSchema { Type = "string", Format = "time", Example = new OpenApiString("14:00") });
-    c.MapType<TimeOnly?>(() => new OpenApiSchema { Type = "string", Format = "time", Nullable = true, Example = new OpenApiString("14:00") });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
 });
+#endregion
 
-builder.Services.AddTransient<ErrorHandlingMiddleware>();
-
-
-builder.Services.AddScoped<IEmailSender, EmailSender>();
-builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
-
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
-
+#region CORS config
 builder.Services.AddCors(option =>
 {
     option.AddPolicy("AllowAll", policy =>
@@ -58,8 +53,37 @@ builder.Services.AddCors(option =>
         .AllowAnyMethod();
     });
 });
+#endregion
+
+#region VNPay Service Config
+var vnpayConfig = builder.Configuration.GetSection("VNPAY");
+
+builder.Services.AddVnpayClient(config =>
+{
+    config.TmnCode = vnpayConfig["TmnCode"]!;
+    config.HashSecret = vnpayConfig["HashSecret"]!;
+    config.CallbackUrl = vnpayConfig["CallbackUrl"]!;
+    // config.BaseUrl = vnpayConfig["BaseUrl"]!; // Tùy chọn. Nếu không thiết lập, giá trị mặc định là URL thanh toán môi trường TEST
+    // config.Version = vnpayConfig["Version"]!; // Tùy chọn. Nếu không thiết lập, giá trị mặc định là "2.1.0"
+    // config.OrderType = vnpayConfig["OrderType"]!; // Tùy chọn. Nếu không thiết lập, giá trị mặc định là "other"
+});
+#endregion
+
+builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddControllers();
+
+builder.Services.AddTransient<ErrorHandlingMiddleware>();
+
+builder.Services.AddApplication();
+
 
 var app = builder.Build();
+
+
+app.MapDefaultEndpoints();
 
 app.UseCors("AllowAll");
 
@@ -71,8 +95,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ApplyMigrations();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseStaticFiles();
 app.UseAuthentication();

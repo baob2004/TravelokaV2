@@ -1,11 +1,12 @@
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TravelokaV2.Infrastructure.Identity;
-using TravelokaV2.Domain.Entities;
-using TravelokaV2.Infrastructure.Persistence.Seed;
-using TravelokaV2.Domain.Abstractions;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Linq.Expressions;
-using Microsoft.AspNetCore.Identity;
+using TravelokaV2.Domain.Abstractions;
+using TravelokaV2.Domain.Entities;
+using TravelokaV2.Infrastructure.Identity;
+using TravelokaV2.Infrastructure.Persistence.Seed;
 
 namespace TravelokaV2.Infrastructure.Persistence
 {
@@ -56,6 +57,16 @@ namespace TravelokaV2.Infrastructure.Persistence
                     builder.Entity(et.ClrType).HasQueryFilter(lambda);
                 }
             }
+
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            // Tắt cảnh báo Model thay đổi liên tục
+            optionsBuilder.ConfigureWarnings(w =>
+                w.Ignore(RelationalEventId.PendingModelChangesWarning));
         }
     }
 }
