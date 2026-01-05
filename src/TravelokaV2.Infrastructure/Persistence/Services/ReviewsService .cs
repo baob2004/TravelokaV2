@@ -123,8 +123,13 @@ namespace TravelokaV2.Application.Services
             }, ct);
 
             await _uow.SaveChangesAsync(ct);
+
+            // ✅ cập nhật rating accommodation
+            await RecalcAndUpdateAccommodationRatingAsync(accomId, ct);
+
             return rr.Id;
         }
+
 
         public async Task UpdateAsync(Guid id, ReviewUpdateDto dto, CancellationToken ct)
         {
@@ -135,7 +140,20 @@ namespace TravelokaV2.Application.Services
 
             _mapper.Map(dto, entity);
             await _uow.SaveChangesAsync(ct);
+
+            // ✅ tìm accomId của review này
+            var accomId = await _uow.AccomRRs.Query()
+                .Where(x => x.RRId == id)
+                .Select(x => (Guid?)x.AccomId)
+                .FirstOrDefaultAsync(ct);
+
+            if (accomId.HasValue)
+            {
+                // ✅ cập nhật rating accommodation
+                await RecalcAndUpdateAccommodationRatingAsync(accomId.Value, ct);
+            }
         }
+
 
         public async Task DeleteAsync(Guid id, CancellationToken ct)
         {
@@ -229,5 +247,28 @@ namespace TravelokaV2.Application.Services
 
             return resp;
         }
+        private async Task RecalcAndUpdateAccommodationRatingAsync(Guid accomId, CancellationToken ct)
+        {
+            // tính trung bình Rating từ ReviewsAndRating (qua bảng link Accom_RR)
+            var avg = await _uow.AccomRRs.Query()
+                .Where(x =>
+                    x.AccomId == accomId
+                    && x.ReviewsAndRating != null
+                    && !x.ReviewsAndRating.IsDeleted
+                    && x.ReviewsAndRating.Rating != null)
+                .Select(x => (double?)x.ReviewsAndRating!.Rating) // AverageAsync dễ ăn với double?
+                .AverageAsync(ct);
+
+            var accom = await _uow.Accommodations.GetByIdAsync(accomId, asNoTracking: false, ct: ct);
+            if (accom == null) return;
+
+            accom.Rating = avg.HasValue ? (float)avg.Value : null;
+
+            // nếu Accommodation có ModifyAt
+            accom.ModifyAt = DateTime.UtcNow;
+
+            await _uow.SaveChangesAsync(ct);
+        }
+
     }
 }

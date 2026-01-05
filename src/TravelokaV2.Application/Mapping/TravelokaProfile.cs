@@ -35,7 +35,16 @@ namespace TravelokaV2.Application.Mapping
                         .OrderBy(ai => ai.Id)
                         .Select(ai => (Guid?)ai.ImageId)
                         .FirstOrDefault()
+                ))
+                .ForMember(d => d.Rating, o => o.MapFrom(s =>
+                    s.Accom_RRs
+                        .Where(ar => ar.ReviewsAndRating != null
+                                  && !ar.ReviewsAndRating.IsDeleted
+                                  && ar.ReviewsAndRating.Rating != null)
+                        .Select(ar => (double?)ar.ReviewsAndRating!.Rating)
+                        .Average()
                 ));
+
 
             CreateMap<Accommodation, AccomDetailDto>()
             .ForMember(d => d.AccomTypeName,

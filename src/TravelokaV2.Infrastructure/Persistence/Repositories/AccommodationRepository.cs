@@ -82,7 +82,8 @@ namespace TravelokaV2.Infrastructure.Persistence.Repositories
             q = q
             .AsSplitQuery()
             .Include(a => a.RoomCategories).ThenInclude(rc => rc.Rooms)
-            .Include(a => a.Accom_Images).ThenInclude(ai => ai.Image);
+            .Include(a => a.Accom_Images).ThenInclude(ai => ai.Image)
+            .Include(a => a.Accom_RRs).ThenInclude(x => x.ReviewsAndRating);
 
             var items = await q
                 .Skip((page - 1) * pageSize)
